@@ -5,7 +5,7 @@ import { AboutSchoolIndex } from "@/features/about/ui/AboutSchoolIndex";
 import { AboutSchoolMission } from "@/features/about/ui/AboutSchoolMission";
 import { AboutSchoolPractice } from "@/features/about/ui/AboutSchoolPractice";
 import { AboutSchoolStory } from "@/features/about/ui/AboutSchoolStory";
-import { HomeCoachesSection } from "@/features/home/ui/HomeCoachesSection";
+import { HomeCoachesSection, type HomeCoachCard } from "@/features/home/ui/HomeCoachesSection";
 import { HomeCtaSection } from "@/features/home/ui/HomeCtaSection";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
@@ -13,9 +13,10 @@ import type { Dictionary } from "@/lib/i18n/get-dictionary";
 type AboutSchoolViewProps = {
   locale: Locale;
   dictionary: Dictionary;
+  coaches: readonly HomeCoachCard[];
 };
 
-export function AboutSchoolView({ locale, dictionary }: AboutSchoolViewProps) {
+export function AboutSchoolView({ locale, dictionary, coaches }: AboutSchoolViewProps) {
   const landing = dictionary.home.landing;
   const about = dictionary.about;
 
@@ -49,11 +50,11 @@ export function AboutSchoolView({ locale, dictionary }: AboutSchoolViewProps) {
       <AboutSchoolExperience copy={about.experience} />
       <HomeCoachesSection
         title={landing.coaches.title}
-        name={landing.coaches.name}
         moreLabel={landing.coaches.more}
         moreHref={`/${locale}/teachers`}
         previousLabel={landing.previous}
         nextLabel={landing.next}
+        coaches={coaches}
       />
       <AboutSchoolPractice copy={about.practice} />
       <HomeCtaSection

@@ -2,8 +2,8 @@
 
 **Database.** PostgreSQL (Neon)
 **ORM/migrations.** Drizzle ORM / Drizzle Kit
-**Կարգավիճակ.** Canonical 26-table schema migrated; idempotent seed available (`pnpm db:seed`)
-**Canonical table count.** 26
+**Կարգավիճակ.** Canonical 27-table schema migrated; idempotent seed available (`pnpm db:seed`)
+**Canonical table count.** 27
 **Վերջին թարմացում.** 2026-10-23
 
 ## 1. Սխեմայի նպատակը
@@ -29,7 +29,7 @@
 - Financial, stock և audit records-ը hard delete չեն ընդունում։
 - Flexible JSONB-ը միշտ Zod schema/version ունի և business-critical relational կապերը չի փոխարինում։
 
-## 3. Canonical 26-table inventory
+## 3. Canonical 27-table inventory
 
 | # | Table | Domain | Նշանակություն |
 |---:|---|---|---|
@@ -45,20 +45,21 @@
 | 10 | `hero_slides` | Content | Hero configuration և translations |
 | 11 | `blog_posts` | Content | Blog content, translations և tags |
 | 12 | `school_events` | Content | School performances: schedule, price, translations, poster |
-| 13 | `carts` | Commerce | Guest/customer cart identity/lifecycle |
-| 14 | `cart_items` | Commerce | Cart product quantities |
-| 15 | `wishlist_items` | Commerce | Customer wishlist entries |
-| 16 | `promotions` | Pricing | Coupons և automatic discounts մեկ rule model-ում |
-| 17 | `promotion_users` | Pricing | User-restricted promotion allowlist |
-| 18 | `delivery_rules` | Fulfillment | Location-based delivery pricing |
-| 19 | `orders` | Orders | Order, address/money/promotion snapshots, idempotency |
-| 20 | `order_items` | Orders | Immutable purchased-item snapshots |
-| 21 | `order_events` | Orders | Status, notes և payment provider events |
-| 22 | `payments` | Payments | Payment attempts/current provider state |
-| 23 | `reviews` | Engagement | Verified-purchase reviews/moderation |
-| 24 | `contact_messages` | Support | Contact inbox |
-| 25 | `audit_logs` | Security | Immutable admin/security audit |
-| 26 | `outbox_events` | Reliability | Reliable post-commit email/provider/cache work |
+| 13 | `school_teachers` | Content | School teachers: specialization, classes, translations, portrait |
+| 14 | `carts` | Commerce | Guest/customer cart identity/lifecycle |
+| 15 | `cart_items` | Commerce | Cart product quantities |
+| 16 | `wishlist_items` | Commerce | Customer wishlist entries |
+| 17 | `promotions` | Pricing | Coupons և automatic discounts մեկ rule model-ում |
+| 18 | `promotion_users` | Pricing | User-restricted promotion allowlist |
+| 19 | `delivery_rules` | Fulfillment | Location-based delivery pricing |
+| 20 | `orders` | Orders | Order, address/money/promotion snapshots, idempotency |
+| 21 | `order_items` | Orders | Immutable purchased-item snapshots |
+| 22 | `order_events` | Orders | Status, notes և payment provider events |
+| 23 | `payments` | Payments | Payment attempts/current provider state |
+| 24 | `reviews` | Engagement | Verified-purchase reviews/moderation |
+| 25 | `contact_messages` | Support | Contact inbox |
+| 26 | `audit_logs` | Security | Immutable admin/security audit |
+| 27 | `outbox_events` | Reliability | Reliable post-commit email/provider/cache work |
 
 ### Count assumptions
 
@@ -184,6 +185,10 @@ Tags-ը standalone taxonomy չէ initial scope-ում, հետևաբար առան
 ### 7.3 `school_events`
 
 Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), calendar date, start time, duration minutes, AMD ticket price, optional age restriction, poster/seating/gallery object keys, և `translations JSONB` (name, slug, description, venue, address)։ Locale slug expression indexes-ը unique են միայն չջնջված տողերի համար։ Public կայքը ցույց է տալիս միայն `PUBLISHED` տողերը։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։
+
+### 7.4 `school_teachers`
+
+Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), specialization (`ballet`, `contemporary`, `traditional`, `team`), `class_ids JSONB`, sort order `0..9999`, optional portrait object key, և `translations JSONB` (name, experience, biography)։ Public roster-ը, գլխավոր էջը և about էջը ցույց են տալիս միայն `PUBLISHED` տողերը։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։ Սկզբնական հինգ դասավանդողը seed migration-ով է մտել։
 
 ## 8. Cart և wishlist
 

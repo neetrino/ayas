@@ -317,6 +317,13 @@
 - Public routes՝ `/{locale}/events` և `/{locale}/events/{slug}` կարդում են միայն `PUBLISHED` event-ները։
 - Ջնջումը soft delete է և audit log ունի։
 
+### School teachers
+
+- Admin route՝ `/{locale}/admin/teachers`։ Create և edit-ը բացվում են drawer-ով։
+- Fields՝ multilingual name/experience/biography, specialization (`ballet`, `contemporary`, `traditional`, `team`), class program ids, sort order, status, optional portrait։
+- Public route՝ `/{locale}/teachers`, գլխավոր էջի teachers բլոկը և `/{locale}/about` կարդում են միայն `PUBLISHED` teacher-ները։ UI պիտակները մնում են locale dictionary-ում։
+- Ջնջումը soft delete է և audit log ունի։
+
 ### School gallery
 
 - Public route՝ `/{locale}/gallery`։

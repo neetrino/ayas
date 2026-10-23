@@ -64,6 +64,19 @@ export const schoolEventStatusEnum = pgEnum("school_event_status", [
   "ARCHIVED",
 ]);
 
+export const schoolTeacherStatusEnum = pgEnum("school_teacher_status", [
+  "DRAFT",
+  "PUBLISHED",
+  "ARCHIVED",
+]);
+
+export const schoolTeacherRoleEnum = pgEnum("school_teacher_role", [
+  "ballet",
+  "contemporary",
+  "traditional",
+  "team",
+]);
+
 export const cartStatusEnum = pgEnum("cart_status", [
   "ACTIVE",
   "MERGED",

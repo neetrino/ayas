@@ -16,12 +16,15 @@ export {
   blogPosts,
   heroSlides,
   schoolEvents,
+  schoolTeachers,
   type BlogTranslation,
   type BlogTranslationsJson,
   type HeroTranslation,
   type HeroTranslationsJson,
   type SchoolEventTranslation,
   type SchoolEventTranslationsJson,
+  type SchoolTeacherTranslation,
+  type SchoolTeacherTranslationsJson,
 } from "@/db/schema/content";
 export {
   cartItems,

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { listPublishedTeachers } from "@/features/teachers/application/queries";
 import { TeachersView } from "@/features/teachers/ui/TeachersView";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -35,5 +36,13 @@ export default async function TeachersPage({ params }: TeachersPageProps) {
 
   const locale: Locale = rawLocale;
 
-  return <TeachersView locale={locale} dictionary={getDictionary(locale)} />;
+  const published = await listPublishedTeachers(locale);
+
+  return (
+    <TeachersView
+      locale={locale}
+      dictionary={getDictionary(locale)}
+      published={published}
+    />
+  );
 }

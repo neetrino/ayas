@@ -6,22 +6,25 @@ import { TeachersRoster, type TeacherRosterPerson } from "@/features/teachers/ui
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
+type PublishedTeacherInput = {
+  id: string;
+  name: string;
+  roleId: string;
+  experience: string;
+  biography: string;
+  classIds: readonly string[];
+  imageSrc: string | null;
+};
+
 type TeachersViewProps = {
   locale: Locale;
   dictionary: Dictionary;
+  published: readonly PublishedTeacherInput[];
 };
-
-const PORTRAITS = [
-  homeAssets.coach,
-  homeAssets.gallery[0],
-  homeAssets.gallery[1],
-  homeAssets.about,
-  homeAssets.gallery[3],
-] as const;
 
 const ROLE_FILTERS = ["ballet", "contemporary", "traditional", "team"] as const;
 
-export function TeachersView({ locale, dictionary }: TeachersViewProps) {
+export function TeachersView({ locale, dictionary, published }: TeachersViewProps) {
   const landing = dictionary.home.landing;
   const teachers = dictionary.teachers;
 
@@ -46,7 +49,7 @@ export function TeachersView({ locale, dictionary }: TeachersViewProps) {
         classesLabel={teachers.fields.classes}
         empty={teachers.empty}
         options={filterOptions(teachers)}
-        people={rosterPeople(locale, teachers, dictionary.classes.programs)}
+        people={rosterPeople(locale, teachers, dictionary.classes.programs, published)}
       />
       <HomeCtaSection
         title={landing.cta.title}
@@ -70,16 +73,17 @@ function rosterPeople(
   locale: Locale,
   teachers: Dictionary["teachers"],
   programs: Dictionary["classes"]["programs"],
+  published: readonly PublishedTeacherInput[],
 ): TeacherRosterPerson[] {
-  return teachers.people.map((person, index) => ({
+  return published.map((person) => ({
     id: person.id,
     name: person.name,
-    roleId: person.role,
-    specialization: roleLabel(teachers.roles, person.role),
+    roleId: person.roleId,
+    specialization: roleLabel(teachers.roles, person.roleId),
     experience: person.experience,
     biography: person.biography,
     classes: taughtClasses(locale, person.classIds, programs),
-    imageSrc: PORTRAITS[index % PORTRAITS.length] ?? homeAssets.coach,
+    imageSrc: person.imageSrc ?? homeAssets.coach,
   }));
 }
 

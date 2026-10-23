@@ -21,47 +21,5 @@
     "contemporary": "Contemporary dance",
     "traditional": "Traditional dance",
     "team": "School team"
-  },
-  "people": [
-    {
-      "id": "anahit-grigoryan",
-      "name": "Anahit Grigoryan",
-      "role": "ballet",
-      "experience": "Twenty years of stage performance and studio teaching.",
-      "biography": "Anahit leads the classical program. She shapes barre, center work, and the rehearsals that carry a class to the stage.",
-      "classIds": ["ballet-children", "ballet-teens", "stage"]
-    },
-    {
-      "id": "mane-avagyan",
-      "name": "Mane Avagyan",
-      "role": "contemporary",
-      "experience": "Twelve years teaching contemporary dance.",
-      "biography": "Mane works with floor work, improvisation, and a personal movement language for teens and adults.",
-      "classIds": ["contemporary"]
-    },
-    {
-      "id": "tigran-hakobyan",
-      "name": "Tigran Hakobyan",
-      "role": "traditional",
-      "experience": "Fifteen years with Armenian dance ensembles.",
-      "biography": "Tigran teaches traditional dance as ensemble work, from a child's first pattern to stage repertoire.",
-      "classIds": ["traditional-children", "traditional-adults"]
-    },
-    {
-      "id": "lilit-sargsyan",
-      "name": "Lilit Sargsyan",
-      "role": "ballet",
-      "experience": "Nine years with beginners and adults returning to dance.",
-      "biography": "Lilit keeps a first visit simple and builds adult ballet at a pace that respects the body's experience.",
-      "classIds": ["ballet-adults", "open-class"]
-    },
-    {
-      "id": "nune-petrosyan",
-      "name": "Nune Petrosyan",
-      "role": "team",
-      "experience": "Eight years coordinating programs, visits, and the studio day.",
-      "biography": "Nune is part of the school team. She welcomes new students, explains the groups, and keeps the daily schedule in order.",
-      "classIds": ["open-class"]
-    }
-  ]
+  }
 }

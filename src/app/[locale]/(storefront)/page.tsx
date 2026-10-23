@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { HomeAboutSection } from "@/features/home/ui/HomeAboutSection";
 import { HomeClassesSection } from "@/features/home/ui/HomeClassesSection";
-import { HomeCoachesSection } from "@/features/home/ui/HomeCoachesSection";
+import { HomeCoachesSection, toHomeCoachCards } from "@/features/home/ui/HomeCoachesSection";
 import { HomeCtaSection } from "@/features/home/ui/HomeCtaSection";
 import { listPublishedEvents } from "@/features/events/application/queries";
 import { formatEventDate } from "@/features/events/domain/format-event";
@@ -19,6 +19,7 @@ import { HomeSiteFooter } from "@/features/home/ui/HomeSiteFooter";
 import { homeAssets } from "@/features/home/ui/home-assets";
 import { landingFooterLinks } from "@/features/home/ui/landing-nav";
 import { getFeaturedProducts } from "@/features/products/queries";
+import { listPublishedTeachers } from "@/features/teachers/application/queries";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import {
@@ -42,10 +43,11 @@ export default async function HomePage({ params }: HomePageProps) {
   const locale: Locale = rawLocale;
   const dictionary = getDictionary(locale);
   const copy = dictionary.home.landing;
-  const [featuredProducts, currency, publishedEvents] = await Promise.all([
+  const [featuredProducts, currency, publishedEvents, publishedTeachers] = await Promise.all([
     getFeaturedProducts(locale),
     getSelectedCurrency(),
     listPublishedEvents(locale),
+    listPublishedTeachers(locale),
   ]);
   const formatPrice = await createDisplayPriceFormatter(locale, currency);
   const products = mapShopCards(locale, featuredProducts, formatPrice, copy.shop);
@@ -73,11 +75,11 @@ export default async function HomePage({ params }: HomePageProps) {
       <HomeClassesSection name={copy.classes.name} />
       <HomeCoachesSection
         title={copy.coaches.title}
-        name={copy.coaches.name}
         moreLabel={copy.coaches.more}
         moreHref={`/${locale}/teachers`}
         previousLabel={copy.previous}
         nextLabel={copy.next}
+        coaches={toHomeCoachCards(publishedTeachers)}
       />
       <HomeShopSection
         title={copy.shop.title}

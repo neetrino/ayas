@@ -12,6 +12,7 @@ export const CACHE_TAGS = {
   blogPostSlug: (locale: string, slug: string) =>
     `blog-slug:${locale}:${slug}`,
   events: "events",
+  teachers: "teachers",
   eventSlug: (locale: string, slug: string) => `event-slug:${locale}:${slug}`,
   settings: "settings",
 } as const;

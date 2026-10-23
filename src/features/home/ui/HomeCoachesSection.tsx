@@ -1,28 +1,46 @@
 import Image from "next/image";
 
 import { AppLink } from "@/components/ui/AppLink";
-import { HomeCarousel } from "@/features/home/ui/HomeCarousel";
 import { homeAssets } from "@/features/home/ui/home-assets";
+import { HomeCarousel } from "@/features/home/ui/HomeCarousel";
 
-const COACH_COUNT = 3;
+export type HomeCoachCard = {
+  id: string;
+  name: string;
+  imageSrc: string;
+};
+
+export function toHomeCoachCards(
+  teachers: readonly { id: string; name: string; imageSrc: string | null }[],
+): HomeCoachCard[] {
+  return teachers.map((teacher) => ({
+    id: teacher.id,
+    name: teacher.name,
+    imageSrc: teacher.imageSrc ?? homeAssets.coach,
+  }));
+}
 
 type HomeCoachesSectionProps = {
   title: string;
-  name: string;
   moreLabel: string;
   moreHref: string;
   previousLabel: string;
   nextLabel: string;
+  coaches: readonly HomeCoachCard[];
 };
 
 export function HomeCoachesSection({
   title,
-  name,
   moreLabel,
   moreHref,
   previousLabel,
   nextLabel,
+  coaches,
 }: HomeCoachesSectionProps) {
+  if (coaches.length === 0) {
+    return null;
+  }
+
   return (
     <div id="teachers">
       <HomeCarousel
@@ -30,20 +48,20 @@ export function HomeCoachesSection({
         previousLabel={previousLabel}
         nextLabel={nextLabel}
       >
-        {Array.from({ length: COACH_COUNT }, (_, index) => (
+        {coaches.map((coach) => (
           <article
-            key={index}
+            key={coach.id}
             className="relative grid h-[331px] w-[min(86vw,417px)] shrink-0 snap-start grid-cols-[247px_1fr] overflow-hidden rounded-[20px] bg-black text-white"
           >
             <Image
-              src={homeAssets.coach}
+              src={coach.imageSrc}
               alt=""
               width={247}
               height={308}
               className="m-3 h-[308px] w-[247px] rounded-[20px] object-cover"
             />
             <div className="flex flex-col justify-end gap-3 px-4 pb-8">
-              <p className="text-lg font-semibold tracking-[0.02em]">{name}</p>
+              <p className="text-lg font-semibold tracking-[0.02em]">{coach.name}</p>
               <AppLink
                 href={moreHref}
                 prefetchPolicy="intent"

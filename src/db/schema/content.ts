@@ -22,6 +22,8 @@ import {
   blogCategoryEnum,
   blogPostStatusEnum,
   schoolEventStatusEnum,
+  schoolTeacherRoleEnum,
+  schoolTeacherStatusEnum,
 } from "@/db/schema/enums";
 import { users } from "@/db/schema/identity";
 
@@ -59,6 +61,16 @@ export type SchoolEventTranslation = {
 
 export type SchoolEventTranslationsJson = Partial<
   Record<"hy" | "en" | "ru", SchoolEventTranslation>
+>;
+
+export type SchoolTeacherTranslation = {
+  name: string;
+  experience: string;
+  biography: string;
+};
+
+export type SchoolTeacherTranslationsJson = Partial<
+  Record<"hy" | "en" | "ru", SchoolTeacherTranslation>
 >;
 
 export const heroSlides = pgTable(
@@ -166,6 +178,31 @@ export const schoolEvents = pgTable(
     check(
       "school_events_price_chk",
       sql`${table.priceAmount} >= 0`,
+    ),
+  ],
+);
+
+export const schoolTeachers = pgTable(
+  "school_teachers",
+  {
+    id: idColumn(),
+    status: schoolTeacherStatusEnum("status").notNull().default("DRAFT"),
+    role: schoolTeacherRoleEnum("role").notNull(),
+    classIds: jsonb("class_ids").$type<string[]>().notNull().default([]),
+    sortOrder: integer("sort_order").notNull().default(0),
+    portraitKey: text("portrait_key"),
+    translations: jsonb("translations")
+      .$type<SchoolTeacherTranslationsJson>()
+      .notNull(),
+    createdAt: createdAtColumn(),
+    updatedAt: updatedAtColumn(),
+    deletedAt: deletedAtColumn(),
+  },
+  (table) => [
+    index("school_teachers_status_sort_idx").on(table.status, table.sortOrder),
+    check(
+      "school_teachers_sort_chk",
+      sql`${table.sortOrder} >= 0 AND ${table.sortOrder} <= 9999`,
     ),
   ],
 );

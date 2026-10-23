@@ -64,6 +64,11 @@ export function invalidateEventsCache(input?: {
   }
 }
 
+/** Invalidates the public teachers roster. */
+export function invalidateTeachersCache(): void {
+  updateTag(CACHE_TAGS.teachers);
+}
+
 /** Invalidates blog list caches and optional per-post / per-slug detail caches. */
 export function invalidateBlogCache(input?: {
   postId?: string;
