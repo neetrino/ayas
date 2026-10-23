@@ -14,6 +14,8 @@ import {
 } from "@/features/analytics/domain/date-range";
 import { getAdminDashboardMetrics } from "@/features/orders/application/queries";
 import { isLocale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { fillAdmin } from "@/features/admin/ui/fill-admin";
 
 type AdminPageProps = {
   params: Promise<{ locale: string }>;
@@ -29,16 +31,12 @@ function formatMoney(amount: number): string {
 const QUICK_ACTIONS = [
   {
     href: "products/new",
-    title: "Add product",
-    subtitle: "Create a new product",
     iconBg: "bg-green-100",
     iconColor: "text-green-600",
     iconPath: "M12 4v16m8-8H4",
   },
   {
     href: "orders",
-    title: "Manage orders",
-    subtitle: "View all orders",
     iconBg: "bg-blue-100",
     iconColor: "text-blue-600",
     iconPath:
@@ -46,8 +44,6 @@ const QUICK_ACTIONS = [
   },
   {
     href: "users",
-    title: "Manage users",
-    subtitle: "View all users",
     iconBg: "bg-purple-100",
     iconColor: "text-purple-600",
     iconPath:
@@ -55,8 +51,6 @@ const QUICK_ACTIONS = [
   },
   {
     href: "settings",
-    title: "Settings",
-    subtitle: "Configure store",
     iconBg: "bg-yellow-100",
     iconColor: "text-yellow-600",
     iconPath:
@@ -70,16 +64,35 @@ export default async function AdminPage({ params }: AdminPageProps) {
     notFound();
   }
 
+  const copy = getDictionary(locale).admin;
   const metrics = await getAdminDashboardMetrics(defaultAnalyticsDateRange());
   const revenueDelta = `${formatPeriodDelta(
     metrics.revenueAmount,
     metrics.previousRevenueAmount,
-  )} vs prev`;
+  )} ${copy.dashboard.vsPrev}`;
+  const quickLabels: Record<string, { title: string; subtitle: string }> = {
+    "products/new": {
+      title: copy.dashboard.addProduct,
+      subtitle: copy.dashboard.addProductHint,
+    },
+    orders: {
+      title: copy.dashboard.manageOrders,
+      subtitle: copy.dashboard.manageOrdersHint,
+    },
+    users: {
+      title: copy.dashboard.manageUsers,
+      subtitle: copy.dashboard.manageUsersHint,
+    },
+    settings: {
+      title: copy.nav.settings,
+      subtitle: copy.dashboard.settingsHint,
+    },
+  };
 
   return (
     <section>
       <div className="mb-8">
-        <p className={ADMIN_PAGE_SUBTITLE}>Welcome to the admin dashboard</p>
+        <p className={ADMIN_PAGE_SUBTITLE}>{copy.dashboard.welcome}</p>
       </div>
 
       <DashboardStatsGrid
@@ -95,13 +108,13 @@ export default async function AdminPage({ params }: AdminPageProps) {
         <Card className="p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">
-              Recent orders
+              {copy.dashboard.recentOrders}
             </h2>
             <Link
               href={`/${locale}/admin/orders`}
               className="rounded-xl px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100"
             >
-              View all
+              {copy.common.viewAll}
             </Link>
           </div>
           <div className="space-y-4">
@@ -135,7 +148,7 @@ export default async function AdminPage({ params }: AdminPageProps) {
             ))}
             {metrics.recentOrders.length === 0 ? (
               <p className="py-8 text-center text-sm text-gray-600">
-                No recent orders.
+                {copy.dashboard.noRecentOrders}
               </p>
             ) : null}
           </div>
@@ -144,13 +157,13 @@ export default async function AdminPage({ params }: AdminPageProps) {
         <Card className="p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">
-              Top products
+              {copy.dashboard.topProducts}
             </h2>
             <Link
               href={`/${locale}/admin/products`}
               className="rounded-xl px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100"
             >
-              View all
+              {copy.common.viewAll}
             </Link>
           </div>
           <div className="space-y-4">
@@ -167,14 +180,14 @@ export default async function AdminPage({ params }: AdminPageProps) {
                     {product.title}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {product.quantity} sold
+                    {fillAdmin(copy.dashboard.sold, { count: product.quantity })}
                   </p>
                 </div>
               </div>
             ))}
             {metrics.topProducts.length === 0 ? (
               <p className="py-8 text-center text-sm text-gray-600">
-                No product sales in this range.
+                {copy.dashboard.noProductSales}
               </p>
             ) : null}
           </div>
@@ -183,7 +196,7 @@ export default async function AdminPage({ params }: AdminPageProps) {
 
       <Card className="mb-8 p-6">
         <h2 className="mb-4 text-xl font-semibold text-gray-900">
-          Quick actions
+          {copy.dashboard.quickActions}
         </h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {QUICK_ACTIONS.map((action) => (
@@ -210,8 +223,12 @@ export default async function AdminPage({ params }: AdminPageProps) {
                 </svg>
               </div>
               <div className="text-left">
-                <p className="font-medium text-gray-900">{action.title}</p>
-                <p className="text-xs text-gray-500">{action.subtitle}</p>
+                <p className="font-medium text-gray-900">
+                  {quickLabels[action.href]?.title}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {quickLabels[action.href]?.subtitle}
+                </p>
               </div>
             </Link>
           ))}

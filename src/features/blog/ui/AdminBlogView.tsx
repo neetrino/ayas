@@ -6,10 +6,8 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import {
-  ConfirmDialog,
-  deleteConfirmDescription,
-} from "@/components/ui/ConfirmDialog";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import {
   ADMIN_PAGE_TITLE,
 } from "@/features/admin/ui/admin-form-classes";
@@ -17,7 +15,6 @@ import { AdminSearchInput } from "@/features/admin/ui/AdminSearchInput";
 import { ADMIN_BADGE } from "@/features/admin/ui/status-badge";
 import { deleteBlogPostAction } from "@/features/blog/application/manage-blog";
 import type { AdminBlogListItem } from "@/features/blog/application/queries";
-import { BLOG_CATEGORY_ADMIN_LABELS } from "@/features/blog/domain/blog-article";
 import { BlogPostDrawer } from "@/features/blog/ui/BlogPostDrawer";
 
 type AdminBlogViewProps = {
@@ -33,15 +30,19 @@ function statusBadgeClass(status: string): string {
   return "bg-gray-100 text-gray-800";
 }
 
-function statusLabel(status: string): string {
+function statusLabel(
+  status: string,
+  labels: { published: string; draft: string; archived: string },
+): string {
   const normalized = status.toUpperCase();
-  if (normalized === "PUBLISHED") return "Published";
-  if (normalized === "DRAFT") return "Draft";
-  if (normalized === "ARCHIVED") return "Archived";
+  if (normalized === "PUBLISHED") return labels.published;
+  if (normalized === "DRAFT") return labels.draft;
+  if (normalized === "ARCHIVED") return labels.archived;
   return status;
 }
 
 export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -102,7 +103,7 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
   return (
     <section>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className={ADMIN_PAGE_TITLE}>Blog / News</h1>
+        <h1 className={ADMIN_PAGE_TITLE}>{copy.blog.title}</h1>
         <Button
           type="button"
           size="sm"
@@ -110,16 +111,16 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
           className="inline-flex items-center gap-1.5"
         >
           <Plus className="h-4 w-4" aria-hidden />
-          Add Post
+          {copy.blog.add}
         </Button>
       </div>
 
       <AdminSearchInput
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Search by title or slug"
+        placeholder={copy.blog.searchPlaceholder}
         wrapperClassName="mb-4"
-        aria-label="Search blog posts"
+        aria-label={copy.blog.searchLabel}
       />
 
       {error ? <p className="mb-3 text-sm text-red-700">{error}</p> : null}
@@ -129,8 +130,8 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
           <Card className="rounded-xl p-8">
             <p className="text-center text-sm text-gray-600">
               {posts.length === 0
-                ? "No blog posts yet."
-                : "No posts match this search."}
+                ? copy.blog.empty
+                : copy.blog.noMatch}
             </p>
           </Card>
         ) : (
@@ -151,7 +152,7 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 text-xs font-medium text-white/70">
-                        Blog
+                        {copy.nav.blog}
                       </div>
                     )}
                   </div>
@@ -165,7 +166,7 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
                       </p>
                     ) : null}
                     <p className="mt-1 text-xs text-gray-500">
-                      {BLOG_CATEGORY_ADMIN_LABELS[post.category]}
+                      {copy.blog.categories[post.category]}
                       {post.publishedAt ? ` · ${post.publishedAt}` : ""}
                     </p>
                   </div>
@@ -175,14 +176,14 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
                   <span
                     className={`${ADMIN_BADGE} ${statusBadgeClass(post.status)}`}
                   >
-                    {statusLabel(post.status)}
+                    {statusLabel(post.status, copy.common)}
                   </span>
                   <button
                     type="button"
                     disabled={isPending}
                     onClick={() => openEdit(post)}
                     className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-50"
-                    aria-label={`Edit ${post.title}`}
+                    aria-label={fillAdmin(copy.common.editNamed, { name: post.title })}
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
@@ -191,7 +192,7 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
                     disabled={isPending}
                     onClick={() => requestDelete(post.id, post.title)}
                     className="rounded p-1.5 text-red-600 hover:bg-red-50 disabled:opacity-50"
-                    aria-label={`Delete ${post.title}`}
+                    aria-label={fillAdmin(copy.common.deleteNamed, { name: post.title })}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -217,10 +218,15 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
 
       <ConfirmDialog
         open={pendingDelete !== null}
-        title="Delete"
+        title={copy.common.delete}
+        confirmLabel={copy.common.delete}
+        cancelLabel={copy.common.cancel}
         description={
           pendingDelete
-            ? deleteConfirmDescription("post", pendingDelete.title)
+            ? fillAdmin(copy.common.deleteConfirm, {
+                entity: copy.common.entities.post,
+                name: pendingDelete.title,
+              })
             : ""
         }
         isPending={isPending}

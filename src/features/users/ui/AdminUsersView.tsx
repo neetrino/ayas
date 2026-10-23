@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { Card } from "@/components/ui/Card";
 import {
   ConfirmDialog,
@@ -74,6 +75,7 @@ export function AdminUsersView({
   q,
   role,
 }: AdminUsersViewProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -104,7 +106,7 @@ export function AdminUsersView({
         await action();
         router.refresh();
       } catch (caught) {
-        setError(caught instanceof Error ? caught.message : "Action failed.");
+        setError(caught instanceof Error ? caught.message : copy.common.actionFailed);
       }
     });
   }
@@ -120,15 +122,15 @@ export function AdminUsersView({
         setConfirmOpen(false);
         router.refresh();
       } catch (caught) {
-        setError(caught instanceof Error ? caught.message : "Action failed.");
+        setError(caught instanceof Error ? caught.message : copy.common.actionFailed);
       }
     });
   }
 
   const rolePills = [
-    { label: "All", value: undefined },
-    { label: "Admins", value: "ADMIN" },
-    { label: "Customers", value: "CUSTOMER" },
+    { label: copy.common.all, value: undefined },
+    { label: copy.users.admins, value: "ADMIN" },
+    { label: copy.users.customers, value: "CUSTOMER" },
   ] as const;
 
   return (
@@ -137,19 +139,19 @@ export function AdminUsersView({
         <AdminSearchInput
           name="q"
           defaultValue={q ?? ""}
-          placeholder="Search by email, phone, name..."
+          placeholder={copy.users.searchPlaceholder}
           wrapperClassName="min-w-[220px] flex-1"
-          aria-label="Search users"
+          aria-label={copy.users.searchLabel}
         />
         {role ? <input type="hidden" name="role" value={role} /> : null}
         <Button type="submit" size="sm">
-          Search
+          {copy.common.search}
         </Button>
       </form>
 
       <div className="mb-4">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Admin / Customer
+          {copy.users.roleFilter}
         </p>
         <div className="flex flex-wrap gap-2">
           {rolePills.map((pill) => {
@@ -171,13 +173,15 @@ export function AdminUsersView({
         </div>
       </div>
 
-      <p className="mb-3 text-sm text-gray-600">Total users: {total}</p>
+      <p className="mb-3 text-sm text-gray-600">
+        {fillAdmin(copy.users.total, { count: total })}
+      </p>
 
       {error ? <p className="mb-3 text-sm text-red-700">{error}</p> : null}
 
       <Card className="mb-4 flex flex-wrap items-center justify-between gap-3 p-4">
         <p className="text-sm text-gray-700">
-          Selected {selected.size} user{selected.size === 1 ? "" : "s"}
+          {fillAdmin(copy.common.selectedCount, { count: selected.size })}
         </p>
         <Button
           type="button"
@@ -189,14 +193,14 @@ export function AdminUsersView({
             setConfirmOpen(true);
           }}
         >
-          Delete Selected
+          {copy.common.deleteSelected}
         </Button>
       </Card>
 
       <Card className={ADMIN_TABLE_CARD}>
         {users.length === 0 ? (
           <p className={`${ADMIN_TABLE_STATE_INSET} text-sm text-gray-600`}>
-            No users match these filters.
+            {copy.users.empty}
           </p>
         ) : (
           <div className={ADMIN_TABLE_OUTER_SCROLL}>
@@ -210,15 +214,15 @@ export function AdminUsersView({
                       checked={allSelected}
                       onChange={toggleAll}
                       disabled={isPending || users.length === 0}
-                      aria-label="Select all users"
+                      aria-label={copy.users.selectAll}
                     />
                   </th>
-                  <th className={ADMIN_TABLE_TH}>User</th>
-                  <th className={ADMIN_TABLE_TH}>Contact</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Orders</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Roles</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Status</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Created</th>
+                  <th className={ADMIN_TABLE_TH}>{copy.common.user}</th>
+                  <th className={ADMIN_TABLE_TH}>{copy.common.contact}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.users.orders}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.roles}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.status}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.created}</th>
                 </tr>
               </thead>
               <tbody className={ADMIN_TABLE_TBODY}>
@@ -326,8 +330,12 @@ export function AdminUsersView({
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Delete"
-        description={`Are you sure you want to delete ${selected.size} selected user${selected.size === 1 ? "" : "s"}? This anonymizes their accounts and cannot be undone.`}
+        title={copy.common.delete}
+        confirmLabel={copy.common.delete}
+        cancelLabel={copy.common.cancel}
+        description={fillAdmin(copy.users.deleteSelectedConfirm, {
+          count: selected.size,
+        })}
         isPending={isPending}
         onClose={() => {
           if (!isPending) setConfirmOpen(false);

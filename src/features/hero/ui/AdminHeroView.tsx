@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { Card } from "@/components/ui/Card";
 import {
   ADMIN_PAGE_SUBTITLE,
@@ -25,6 +26,7 @@ export function AdminHeroView({
   slides,
   initialEditId,
 }: AdminHeroViewProps) {
+  const copy = useAdminCopy();
   const initialSlide =
     initialEditId != null
       ? (slides.find((slide) => slide.id === initialEditId) ?? null)
@@ -52,18 +54,20 @@ export function AdminHeroView({
     <section>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className={ADMIN_PAGE_TITLE}>Hero slides</h1>
+          <h1 className={ADMIN_PAGE_TITLE}>{copy.hero.title}</h1>
           <p className={`mt-1 ${ADMIN_PAGE_SUBTITLE}`}>
-            {slides.length} slide{slides.length === 1 ? "" : "s"}
+            {fillAdmin(copy.hero.count, { count: slides.length })}
           </p>
         </div>
         <Button type="button" onClick={openCreate}>
-          Create hero slide
+          {copy.hero.create}
         </Button>
       </div>
 
       <div className="mb-4">
-        <h2 className={ADMIN_SECTION_TITLE}>Slides ({slides.length})</h2>
+        <h2 className={ADMIN_SECTION_TITLE}>
+          {fillAdmin(copy.hero.slides, { count: slides.length })}
+        </h2>
       </div>
 
       <div className="space-y-3">
@@ -80,7 +84,7 @@ export function AdminHeroView({
                   />
                 ) : (
                   <div className="flex h-16 w-24 shrink-0 items-center justify-center rounded-lg border border-dashed border-gray-200 bg-gray-50 text-xs text-gray-400">
-                    No image
+                    {copy.common.noImage}
                   </div>
                 )}
                 <div className="min-w-0">
@@ -95,7 +99,7 @@ export function AdminHeroView({
                   </p>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <span className="text-xs text-gray-500">
-                      sort {slide.sortOrder}
+                      {fillAdmin(copy.hero.sort, { order: slide.sortOrder })}
                     </span>
                     <span
                       className={`${ADMIN_BADGE} ${
@@ -104,7 +108,7 @@ export function AdminHeroView({
                           : "bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {slide.isActive ? "PUBLISHED" : "DRAFT"}
+                      {slide.isActive ? copy.common.published : copy.common.draft}
                     </span>
                   </div>
                   {slide.subtitle ? (
@@ -125,7 +129,7 @@ export function AdminHeroView({
         {slides.length === 0 ? (
           <Card className="p-6">
             <p className="text-center text-sm text-gray-600">
-              No hero slides yet.
+              {copy.hero.empty}
             </p>
           </Card>
         ) : null}

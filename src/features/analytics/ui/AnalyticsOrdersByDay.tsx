@@ -1,6 +1,9 @@
+"use client";
+
 import { BarChart3 } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import type { AnalyticsCsvRow } from "@/features/analytics/domain/csv";
 import { formatAnalyticsShortDate } from "@/features/analytics/domain/date-range";
 
@@ -9,7 +12,13 @@ type AnalyticsOrdersByDayProps = {
   formatMoney: (amount: number) => string;
 };
 
-function OrdersTrendChart({ rows }: { rows: AnalyticsCsvRow[] }) {
+function OrdersTrendChart({
+  rows,
+  chartLabel,
+}: {
+  rows: AnalyticsCsvRow[];
+  chartLabel: string;
+}) {
   const width = 640;
   const height = 220;
   const padding = { top: 16, right: 16, bottom: 36, left: 36 };
@@ -42,7 +51,7 @@ function OrdersTrendChart({ rows }: { rows: AnalyticsCsvRow[] }) {
       viewBox={`0 0 ${width} ${height}`}
       className="h-56 w-full"
       role="img"
-      aria-label="Orders by day trend chart"
+      aria-label={chartLabel}
     >
       <defs>
         <linearGradient id="ordersAreaFill" x1="0" y1="0" x2="0" y2="1">
@@ -113,15 +122,18 @@ export function AnalyticsOrdersByDay({
   rows,
   formatMoney,
 }: AnalyticsOrdersByDayProps) {
+  const copy = useAdminCopy();
   const maxOrders = Math.max(...rows.map((row) => row.orderCount), 1);
 
   return (
     <Card className="rounded-2xl p-5 sm:p-6">
       <div className="mb-2 flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Orders by Day</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            {copy.analytics.ordersByDay}
+          </h2>
           <p className="mt-1 text-sm text-gray-500">
-            Daily Order Trends and Revenue
+            {copy.analytics.ordersByDayHint}
           </p>
         </div>
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
@@ -131,12 +143,15 @@ export function AnalyticsOrdersByDay({
 
       {rows.length === 0 ? (
         <p className="py-12 text-center text-sm text-gray-500">
-          No orders in this range.
+          {copy.analytics.noOrders}
         </p>
       ) : (
         <>
           <div className="mt-4 rounded-xl border border-gray-100 bg-gray-50/60 p-3">
-            <OrdersTrendChart rows={rows} />
+            <OrdersTrendChart
+              rows={rows}
+              chartLabel={copy.analytics.chartLabel}
+            />
           </div>
 
           <div className="mt-6 space-y-3">
@@ -159,14 +174,16 @@ export function AnalyticsOrdersByDay({
                       style={{ width: `${widthPct}%` }}
                     />
                     <span className="relative z-10 ml-3 inline-flex h-full items-center text-xs font-semibold text-white">
-                      {row.orderCount} orders
+                      {fillAdmin(copy.analytics.orderCount, {
+                        count: row.orderCount,
+                      })}
                     </span>
                   </div>
                   <p className="text-right text-sm text-gray-600">
                     <span className="font-medium text-gray-900">
                       {formatMoney(row.revenueAmount)}
                     </span>{" "}
-                    revenue
+                    {copy.analytics.revenue}
                   </p>
                 </div>
               );

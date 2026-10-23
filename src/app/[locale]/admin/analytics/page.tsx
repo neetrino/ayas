@@ -12,6 +12,7 @@ import { AnalyticsOrdersByDay } from "@/features/analytics/ui/AnalyticsOrdersByD
 import { AnalyticsPeriodCard } from "@/features/analytics/ui/AnalyticsPeriodCard";
 import { AnalyticsTopRankings } from "@/features/analytics/ui/AnalyticsTopRankings";
 import { isLocale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { formatMoneyAmount } from "@/lib/money/format";
 
 type AdminAnalyticsPageProps = {
@@ -59,7 +60,7 @@ export default async function AdminAnalyticsPage({
     <section>
       <div className="mb-6">
         <p className={ADMIN_PAGE_SUBTITLE}>
-          Track your business performance and statistics
+          {getDictionary(locale).admin.analytics.subtitle}
         </p>
       </div>
 

@@ -6,10 +6,8 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import {
-  ConfirmDialog,
-  deleteConfirmDescription,
-} from "@/components/ui/ConfirmDialog";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { ADMIN_PAGE_TITLE } from "@/features/admin/ui/admin-form-classes";
 import { AdminSearchInput } from "@/features/admin/ui/AdminSearchInput";
 import { ADMIN_BADGE } from "@/features/admin/ui/status-badge";
@@ -29,14 +27,18 @@ function statusBadgeClass(status: string): string {
   return "bg-gray-100 text-gray-800";
 }
 
-function statusLabel(status: string): string {
-  if (status === "PUBLISHED") return "Published";
-  if (status === "DRAFT") return "Draft";
-  if (status === "ARCHIVED") return "Archived";
+function statusLabel(
+  status: string,
+  labels: { published: string; draft: string; archived: string },
+): string {
+  if (status === "PUBLISHED") return labels.published;
+  if (status === "DRAFT") return labels.draft;
+  if (status === "ARCHIVED") return labels.archived;
   return status;
 }
 
 export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -79,7 +81,7 @@ export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
   return (
     <section>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className={ADMIN_PAGE_TITLE}>Events</h1>
+        <h1 className={ADMIN_PAGE_TITLE}>{copy.events.title}</h1>
         <Button
           type="button"
           size="sm"
@@ -90,16 +92,16 @@ export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
           className="inline-flex items-center gap-1.5"
         >
           <Plus className="h-4 w-4" aria-hidden />
-          Add Event
+          {copy.events.add}
         </Button>
       </div>
 
       <AdminSearchInput
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Search by name or slug"
+        placeholder={copy.events.searchPlaceholder}
         wrapperClassName="mb-4"
-        aria-label="Search events"
+        aria-label={copy.events.searchLabel}
       />
 
       {error ? <p className="mb-3 text-sm text-red-700">{error}</p> : null}
@@ -109,8 +111,8 @@ export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
           <Card className="rounded-xl p-8">
             <p className="text-center text-sm text-gray-600">
               {events.length === 0
-                ? "No events yet."
-                : "No events match this search."}
+                ? copy.events.empty
+                : copy.events.noMatch}
             </p>
           </Card>
         ) : (
@@ -148,7 +150,7 @@ export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
                 </div>
                 <div className="flex flex-wrap items-center gap-1 sm:justify-end">
                   <span className={`${ADMIN_BADGE} ${statusBadgeClass(event.status)}`}>
-                    {statusLabel(event.status)}
+                    {statusLabel(event.status, copy.common)}
                   </span>
                   <button
                     type="button"
@@ -158,7 +160,7 @@ export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
                       setDrawerOpen(true);
                     }}
                     className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-50"
-                    aria-label={`Edit ${event.title}`}
+                    aria-label={fillAdmin(copy.common.editNamed, { name: event.title })}
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
@@ -169,7 +171,7 @@ export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
                       setPendingDelete({ id: event.id, title: event.title })
                     }
                     className="rounded p-1.5 text-red-600 hover:bg-red-50 disabled:opacity-50"
-                    aria-label={`Delete ${event.title}`}
+                    aria-label={fillAdmin(copy.common.deleteNamed, { name: event.title })}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -195,10 +197,15 @@ export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
 
       <ConfirmDialog
         open={pendingDelete !== null}
-        title="Delete"
+        title={copy.common.delete}
+        confirmLabel={copy.common.delete}
+        cancelLabel={copy.common.cancel}
         description={
           pendingDelete
-            ? deleteConfirmDescription("event", pendingDelete.title)
+            ? fillAdmin(copy.common.deleteConfirm, {
+                entity: copy.common.entities.event,
+                name: pendingDelete.title,
+              })
             : ""
         }
         isPending={isPending}

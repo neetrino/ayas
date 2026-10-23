@@ -10,6 +10,7 @@ import {
 } from "@/features/settings/application/queries";
 import { StoreSettingsForms } from "@/features/settings/ui/StoreSettingsForms";
 import { isLocale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 type AdminSettingsPageProps = {
   params: Promise<{ locale: string }>;
@@ -31,9 +32,11 @@ export default async function AdminSettingsPage({
   return (
     <section>
       <div className="mb-6">
-        <h1 className={ADMIN_PAGE_TITLE}>Store settings</h1>
+        <h1 className={ADMIN_PAGE_TITLE}>
+          {getDictionary(locale).admin.settings.title}
+        </h1>
         <p className={`mt-1 ${ADMIN_PAGE_SUBTITLE}`}>
-          Configure store identity and currency exchange rates
+          {getDictionary(locale).admin.settings.subtitle}
         </p>
       </div>
 

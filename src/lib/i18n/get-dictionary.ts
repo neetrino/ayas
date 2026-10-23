@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n/config";
 
+import enAdmin from "@/locales/en/admin.json";
 import enAbout from "@/locales/en/about.json";
 import enAuth from "@/locales/en/auth.json";
 import enBlog from "@/locales/en/blog.json";
@@ -17,6 +18,7 @@ import enProduct from "@/locales/en/product.json";
 import enProfile from "@/locales/en/profile.json";
 import enWishlist from "@/locales/en/wishlist.json";
 
+import hyAdmin from "@/locales/hy/admin.json";
 import hyAbout from "@/locales/hy/about.json";
 import hyAuth from "@/locales/hy/auth.json";
 import hyBlog from "@/locales/hy/blog.json";
@@ -34,6 +36,7 @@ import hyProduct from "@/locales/hy/product.json";
 import hyProfile from "@/locales/hy/profile.json";
 import hyWishlist from "@/locales/hy/wishlist.json";
 
+import ruAdmin from "@/locales/ru/admin.json";
 import ruAbout from "@/locales/ru/about.json";
 import ruAuth from "@/locales/ru/auth.json";
 import ruBlog from "@/locales/ru/blog.json";
@@ -52,6 +55,7 @@ import ruProfile from "@/locales/ru/profile.json";
 import ruWishlist from "@/locales/ru/wishlist.json";
 
 type LocaleNamespaces = {
+  admin: typeof hyAdmin;
   common: typeof hyCommon;
   home: typeof hyHome;
   contact: typeof hyContact;
@@ -91,11 +95,13 @@ function buildDictionary(namespaces: LocaleNamespaces) {
     classes: namespaces.classes,
     teachers: namespaces.teachers,
     wishlist: namespaces.wishlist,
+    admin: namespaces.admin,
   } as const;
 }
 
 const dictionaries = {
   hy: buildDictionary({
+    admin: hyAdmin,
     common: hyCommon,
     home: hyHome,
     contact: hyContact,
@@ -114,6 +120,7 @@ const dictionaries = {
     wishlist: hyWishlist,
   }),
   en: buildDictionary({
+    admin: enAdmin,
     common: enCommon,
     home: enHome,
     contact: enContact,
@@ -132,6 +139,7 @@ const dictionaries = {
     wishlist: enWishlist,
   }),
   ru: buildDictionary({
+    admin: ruAdmin,
     common: ruCommon,
     home: ruHome,
     contact: ruContact,

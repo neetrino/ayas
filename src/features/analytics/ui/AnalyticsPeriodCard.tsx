@@ -5,13 +5,13 @@ import { useState, useTransition, type FormEvent } from "react";
 
 import { Card } from "@/components/ui/Card";
 import { SelectDropdown } from "@/components/ui/SelectDropdown";
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import {
   ADMIN_INPUT,
   ADMIN_LABEL,
 } from "@/features/admin/ui/admin-form-classes";
 import {
   ANALYTICS_PERIOD_PRESETS,
-  analyticsPeriodLabel,
   formatAnalyticsDisplayDate,
   rangeForAnalyticsPeriod,
   type AnalyticsPeriodPreset,
@@ -34,6 +34,7 @@ export function AnalyticsPeriodCard({
   exportQuery,
   rangeInvalid,
 }: AnalyticsPeriodCardProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [forceCustom, setForceCustom] = useState(preset === "custom");
@@ -73,19 +74,21 @@ export function AnalyticsPeriodCard({
   return (
     <Card className="mb-6 rounded-2xl p-5 sm:p-6">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <h2 className="text-lg font-semibold text-gray-900">Time Period</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          {copy.analytics.timePeriod}
+        </h2>
         <p className="text-sm font-medium text-gray-500">
           {formatAnalyticsDisplayDate(from)} – {formatAnalyticsDisplayDate(to)}
         </p>
       </div>
 
       <div className="max-w-md">
-        <span className={ADMIN_LABEL}>Period</span>
+        <span className={ADMIN_LABEL}>{copy.analytics.period}</span>
         <SelectDropdown
-          ariaLabel="Period"
+          ariaLabel={copy.analytics.period}
           value={selectedPreset}
           options={ANALYTICS_PERIOD_PRESETS.map((option) => ({
-            label: analyticsPeriodLabel(option),
+            label: copy.analytics.periods[option],
             value: option,
           }))}
           disabled={pending}
@@ -101,7 +104,7 @@ export function AnalyticsPeriodCard({
           className="mt-4 flex flex-wrap items-end gap-3"
         >
           <label className="min-w-[140px] flex-1">
-            <span className={ADMIN_LABEL}>From</span>
+            <span className={ADMIN_LABEL}>{copy.common.dateFrom}</span>
             <input
               name="from"
               type="date"
@@ -110,7 +113,7 @@ export function AnalyticsPeriodCard({
             />
           </label>
           <label className="min-w-[140px] flex-1">
-            <span className={ADMIN_LABEL}>To</span>
+            <span className={ADMIN_LABEL}>{copy.common.dateTo}</span>
             <input
               name="to"
               type="date"
@@ -123,7 +126,7 @@ export function AnalyticsPeriodCard({
             disabled={pending}
             className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
           >
-            Apply
+            {copy.common.apply}
           </button>
         </form>
       ) : null}
@@ -133,11 +136,11 @@ export function AnalyticsPeriodCard({
           href={`/api/exports/admin/analytics?${exportQuery}`}
           className="text-sm font-medium text-gray-700 underline-offset-2 hover:underline"
         >
-          Download CSV export
+          {copy.analytics.downloadCsv}
         </a>
         {rangeInvalid ? (
           <p className="text-sm text-red-700">
-            Invalid date range. Showing defaults.
+            {copy.analytics.invalidRange}
           </p>
         ) : null}
       </div>

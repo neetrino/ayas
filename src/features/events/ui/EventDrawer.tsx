@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/Button";
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { SideSheet } from "@/components/ui/SideSheet";
 import type { AdminEventListItem } from "@/features/events/application/queries";
 import {
@@ -60,6 +61,7 @@ export function EventDrawer({
   onClose,
   event = null,
 }: EventDrawerProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const isEdit = event != null;
   const [activeLocale, setActiveLocale] = useState<Locale>(() => firstLocale(event));
@@ -113,7 +115,7 @@ export function EventDrawer({
     const durationMinutes = Number(duration);
     const priceAmount = Number(price);
     if (!Number.isInteger(durationMinutes) || !Number.isInteger(priceAmount)) {
-      setError("Duration and price must be whole numbers.");
+      setError(copy.events.numbers);
       return;
     }
 
@@ -157,12 +159,12 @@ export function EventDrawer({
     <SideSheet
       open={open}
       onClose={onClose}
-      ariaLabel={isEdit ? "Edit event" : "Add event"}
+      ariaLabel={isEdit ? copy.events.edit : copy.events.add}
       panelClassName="w-full md:w-1/2 md:max-w-none"
     >
       <div className="border-b border-gray-200 px-5 py-4">
         <h2 className="text-lg font-semibold text-gray-900">
-          {isEdit ? "Edit event" : "Add event"}
+          {isEdit ? copy.events.edit : copy.events.add}
         </h2>
       </div>
       <form
@@ -237,10 +239,10 @@ export function EventDrawer({
         </div>
         <div className="flex justify-end gap-2 border-t border-gray-200 px-5 py-4">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
-            Cancel
+            {copy.common.cancel}
           </Button>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving…" : "Save"}
+            {isPending ? copy.common.saving : copy.common.save}
           </Button>
         </div>
       </form>

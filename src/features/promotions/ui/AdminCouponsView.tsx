@@ -5,10 +5,10 @@ import { useState, useTransition } from "react";
 import { Check, Copy, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { Card } from "@/components/ui/Card";
 import {
   ConfirmDialog,
-  deleteConfirmDescription,
 } from "@/components/ui/ConfirmDialog";
 import {
   ADMIN_PAGE_SUBTITLE,
@@ -58,6 +58,7 @@ function formatValidUntil(
 }
 
 export function AdminCouponsView({ locale, coupons }: AdminCouponsViewProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingCoupon, setEditingCoupon] =
@@ -118,10 +119,8 @@ export function AdminCouponsView({ locale, coupons }: AdminCouponsViewProps) {
     <section>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className={ADMIN_PAGE_TITLE}>Promo codes</h1>
-          <p className={`mt-1 ${ADMIN_PAGE_SUBTITLE}`}>
-            Create, edit, or remove discount codes for checkout.
-          </p>
+          <h1 className={ADMIN_PAGE_TITLE}>{copy.coupons.title}</h1>
+          <p className={`mt-1 ${ADMIN_PAGE_SUBTITLE}`}>{copy.coupons.subtitle}</p>
         </div>
         <Button
           type="button"
@@ -130,7 +129,7 @@ export function AdminCouponsView({ locale, coupons }: AdminCouponsViewProps) {
           className="inline-flex items-center gap-1.5"
         >
           <Plus className="h-4 w-4" aria-hidden />
-          Add Promo Code
+          {copy.coupons.add}
         </Button>
       </div>
 
@@ -146,14 +145,14 @@ export function AdminCouponsView({ locale, coupons }: AdminCouponsViewProps) {
             <table className={ADMIN_TABLE}>
               <thead className={ADMIN_TABLE_THEAD}>
                 <tr>
-                  <th className={ADMIN_TABLE_TH}>Code</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Type</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Value</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Usage limit</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Used</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Active</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Valid until</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Actions</th>
+                  <th className={ADMIN_TABLE_TH}>{copy.common.code}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.type}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.value}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.coupons.usageLimit}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.used}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.active}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.coupons.validUntil}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.actions}</th>
                 </tr>
               </thead>
               <tbody className={ADMIN_TABLE_TBODY}>
@@ -251,10 +250,15 @@ export function AdminCouponsView({ locale, coupons }: AdminCouponsViewProps) {
 
       <ConfirmDialog
         open={pendingDelete !== null}
-        title="Delete"
+        title={copy.common.delete}
+        confirmLabel={copy.common.delete}
+        cancelLabel={copy.common.cancel}
         description={
           pendingDelete
-            ? deleteConfirmDescription("promo code", pendingDelete.code)
+            ? fillAdmin(copy.common.deleteConfirm, {
+                entity: copy.common.entities.promoCode,
+                name: pendingDelete.code,
+              })
             : ""
         }
         isPending={isPending}

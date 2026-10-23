@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { Card } from "@/components/ui/Card";
 import {
   ConfirmDialog,
-  deleteConfirmDescription,
 } from "@/components/ui/ConfirmDialog";
 import {
   ADMIN_TABLE,
@@ -51,6 +51,7 @@ export function AdminProductsTable({
   sortLinks,
   onEdit,
 }: AdminProductsTableProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -85,7 +86,9 @@ export function AdminProductsTable({
         await action();
         router.refresh();
       } catch (caught) {
-        setError(caught instanceof Error ? caught.message : "Action failed.");
+        setError(
+          caught instanceof Error ? caught.message : copy.common.actionFailed,
+        );
       }
     });
   }
@@ -96,10 +99,7 @@ export function AdminProductsTable({
     setPendingDelete({
       kind: "bulk",
       productIds: [...selected],
-      label:
-        count === 1
-          ? "selected product"
-          : `${count} selected products`,
+      label: String(count),
     });
   }
 
@@ -119,7 +119,9 @@ export function AdminProductsTable({
         setPendingDelete(null);
         router.refresh();
       } catch (caught) {
-        setError(caught instanceof Error ? caught.message : "Action failed.");
+        setError(
+          caught instanceof Error ? caught.message : copy.common.actionFailed,
+        );
       }
     });
   }
@@ -128,7 +130,7 @@ export function AdminProductsTable({
     <div className="flex flex-col gap-4">
       <Card className="flex flex-wrap items-center justify-between gap-3 p-4">
         <p className="text-sm text-gray-700">
-          Selected {selected.size} product{selected.size === 1 ? "" : "s"}
+          {fillAdmin(copy.common.selectedCount, { count: selected.size })}
         </p>
         <Button
           type="button"
@@ -137,7 +139,7 @@ export function AdminProductsTable({
           disabled={isPending || selected.size === 0}
           onClick={deleteSelected}
         >
-          Delete Selected
+          {copy.common.deleteSelected}
         </Button>
       </Card>
 
@@ -146,7 +148,7 @@ export function AdminProductsTable({
       <Card className={ADMIN_TABLE_CARD}>
         {products.length === 0 ? (
           <p className={`${ADMIN_TABLE_STATE_INSET} text-sm text-gray-600`}>
-            No products match these filters.
+            {copy.products.empty}
           </p>
         ) : (
           <div className={ADMIN_TABLE_OUTER_SCROLL}>
@@ -160,33 +162,33 @@ export function AdminProductsTable({
                       checked={allSelected}
                       onChange={toggleAll}
                       disabled={isPending}
-                      aria-label="Select all products"
+                      aria-label={copy.products.selectAll}
                     />
                   </th>
                   <th className={ADMIN_TABLE_TH}>
                     <Link href={sortLinks.title} className="hover:text-gray-900">
-                      Product
+                      {copy.common.product}
                     </Link>
                   </th>
                   <th className={ADMIN_TABLE_TH}>
                     <Link href={sortLinks.stock} className="hover:text-gray-900">
-                      Stock
+                      {copy.common.stock}
                     </Link>
                   </th>
                   <th className={ADMIN_TABLE_TH}>
                     <Link href={sortLinks.price} className="hover:text-gray-900">
-                      Price
+                      {copy.common.price}
                     </Link>
                   </th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Category</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Featured</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Actions</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.category}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.featured}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.actions}</th>
                   <th className={ADMIN_TABLE_TH}>
                     <Link
                       href={sortLinks.created}
                       className="hover:text-gray-900"
                     >
-                      Created
+                      {copy.common.created}
                     </Link>
                   </th>
                 </tr>
@@ -245,13 +247,16 @@ export function AdminProductsTable({
 
       <ConfirmDialog
         open={pendingDelete !== null}
-        title="Delete"
+        title={copy.common.delete}
+        confirmLabel={copy.common.delete}
+        cancelLabel={copy.common.cancel}
         description={
-          pendingDelete?.kind === "bulk"
-            ? `Are you sure you want to delete ${pendingDelete.label}? This action cannot be undone.`
-            : pendingDelete
-              ? deleteConfirmDescription("product", pendingDelete.label)
-              : ""
+          pendingDelete
+            ? fillAdmin(copy.common.deleteConfirm, {
+                entity: copy.common.entities.product,
+                name: pendingDelete.label,
+              })
+            : ""
         }
         isPending={isPending}
         onClose={() => {

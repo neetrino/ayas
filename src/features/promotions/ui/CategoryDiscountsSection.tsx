@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/Button";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { ADMIN_INPUT } from "@/features/admin/ui/admin-form-classes";
 import type { DiscountBoardCategory } from "@/features/promotions/application/discounts-board";
 import { saveCategoryDiscountsAction } from "@/features/promotions/application/manage-discounts";
@@ -39,6 +40,7 @@ export function CategoryDiscountsSection({
   locale,
   categories,
 }: CategoryDiscountsSectionProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const sourceDrafts = useMemo(
     () => draftsFromCategories(categories),
@@ -65,7 +67,9 @@ export function CategoryDiscountsSection({
     for (const category of categories) {
       const parsed = parsePercent(drafts[category.id] ?? "");
       if (parsed === "invalid") {
-        setError(`Invalid percentage for “${category.title}”. Use 1–100.`);
+        setError(
+          fillAdmin(copy.discounts.invalidNamed, { name: category.title }),
+        );
         return;
       }
       items.push({ categoryId: category.id, percentage: parsed });
@@ -89,11 +93,9 @@ export function CategoryDiscountsSection({
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-base font-semibold text-gray-900">
-            Category Discounts
+            {copy.discounts.categoryTitle}
           </h2>
-          <p className="text-sm text-gray-500">
-            Apply discounts to each product within a category
-          </p>
+          <p className="text-sm text-gray-500">{copy.discounts.categorySubtitle}</p>
         </div>
         <Button
           type="button"
@@ -101,13 +103,13 @@ export function CategoryDiscountsSection({
           disabled={isPending || !isDirty || categories.length === 0}
           onClick={saveAll}
         >
-          {isPending ? "Saving…" : "Save"}
+          {isPending ? copy.common.saving : copy.common.save}
         </Button>
       </div>
 
       {categories.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 px-4 py-10 text-center text-sm text-gray-500">
-          No categories found
+          {copy.discounts.noCategories}
         </div>
       ) : (
         <ul className="max-h-80 divide-y divide-gray-100 overflow-y-auto rounded-lg border border-gray-200">
@@ -124,7 +126,7 @@ export function CategoryDiscountsSection({
               </div>
               <div className="flex items-center gap-2">
                 <label className="sr-only" htmlFor={`cat-discount-${category.id}`}>
-                  Discount for {category.title}
+                  {fillAdmin(copy.discounts.discountFor, { name: category.title })}
                 </label>
                 <input
                   id={`cat-discount-${category.id}`}
@@ -151,7 +153,7 @@ export function CategoryDiscountsSection({
                   }
                   className="text-sm font-medium text-gray-600 hover:text-gray-900 disabled:opacity-50"
                 >
-                  Clear
+                  {copy.common.clear}
                 </button>
               </div>
             </li>

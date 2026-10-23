@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { listAdminUsers } from "@/features/users/application/queries";
 import { adminUsersFilterSchema } from "@/features/users/schemas/admin-users";
+import { AdminPager } from "@/features/admin/ui/AdminPager";
 import { AdminUsersView } from "@/features/users/ui/AdminUsersView";
 import { isLocale } from "@/lib/i18n/config";
 
@@ -71,29 +71,14 @@ export default async function AdminUsersPage({
         role={filters.role}
       />
 
-      {totalPages > 1 ? (
-        <nav className="mt-4 flex items-center gap-3 text-sm text-gray-700">
-          {filters.page > 1 ? (
-            <Link
-              href={`/${locale}/admin/users?${buildUsersQuery(filters, filters.page - 1)}`}
-              className="font-medium hover:underline"
-            >
-              Previous
-            </Link>
-          ) : null}
-          <span>
-            Page {filters.page} / {totalPages}
-          </span>
-          {filters.page < totalPages ? (
-            <Link
-              href={`/${locale}/admin/users?${buildUsersQuery(filters, filters.page + 1)}`}
-              className="font-medium hover:underline"
-            >
-              Next
-            </Link>
-          ) : null}
-        </nav>
-      ) : null}
+      <AdminPager
+        locale={locale}
+        page={filters.page}
+        totalPages={totalPages}
+        hrefFor={(page) =>
+          `/${locale}/admin/users?${buildUsersQuery(filters, page)}`
+        }
+      />
     </>
   );
 }

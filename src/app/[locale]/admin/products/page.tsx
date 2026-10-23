@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import {
@@ -7,6 +6,7 @@ import {
 } from "@/features/products/application/list-admin-products";
 import { adminProductsFilterSchema } from "@/features/products/schemas/admin-list";
 import { AdminProductsFilters } from "@/features/products/ui/AdminProductsFilters";
+import { AdminPager } from "@/features/admin/ui/AdminPager";
 import { AdminProductsView } from "@/features/products/ui/AdminProductsView";
 import { isLocale } from "@/lib/i18n/config";
 
@@ -126,29 +126,14 @@ export default async function AdminProductsPage({
         categories={categories}
       />
 
-      {totalPages > 1 ? (
-        <nav className="mt-4 flex items-center gap-3 text-sm text-gray-700">
-          {filters.page > 1 ? (
-            <Link
-              href={`/${locale}/admin/products?${buildQuery(filters, { page: filters.page - 1 })}`}
-              className="font-medium hover:underline"
-            >
-              Previous
-            </Link>
-          ) : null}
-          <span>
-            Page {filters.page} / {totalPages}
-          </span>
-          {filters.page < totalPages ? (
-            <Link
-              href={`/${locale}/admin/products?${buildQuery(filters, { page: filters.page + 1 })}`}
-              className="font-medium hover:underline"
-            >
-              Next
-            </Link>
-          ) : null}
-        </nav>
-      ) : null}
+      <AdminPager
+        locale={locale}
+        page={filters.page}
+        totalPages={totalPages}
+        hrefFor={(page) =>
+          `/${locale}/admin/products?${buildQuery(filters, { page })}`
+        }
+      />
     </section>
   );
 }

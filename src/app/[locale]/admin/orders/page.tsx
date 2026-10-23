@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ADMIN_PAGE_TITLE } from "@/features/admin/ui/admin-form-classes";
@@ -6,8 +5,10 @@ import { listAdminOrders } from "@/features/orders/application/queries";
 import type { OrderStatus } from "@/features/orders/domain/order-status";
 import { adminOrdersFilterSchema } from "@/features/orders/schemas/change-status";
 import { AdminOrdersFilters } from "@/features/orders/ui/AdminOrdersFilters";
+import { AdminPager } from "@/features/admin/ui/AdminPager";
 import { AdminOrdersView } from "@/features/orders/ui/AdminOrdersView";
 import { isLocale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 type AdminOrdersPageProps = {
   params: Promise<{ locale: string }>;
@@ -76,7 +77,7 @@ export default async function AdminOrdersPage({
   return (
     <section>
       <div className="mb-6">
-        <h1 className={ADMIN_PAGE_TITLE}>Orders</h1>
+        <h1 className={ADMIN_PAGE_TITLE}>{getDictionary(locale).admin.nav.orders}</h1>
       </div>
 
       <AdminOrdersFilters
@@ -88,29 +89,14 @@ export default async function AdminOrdersPage({
 
       <AdminOrdersView locale={locale} orders={rows} />
 
-      {totalPages > 1 ? (
-        <nav className="mt-4 flex items-center gap-3 text-sm text-gray-700">
-          {filters.page > 1 ? (
-            <Link
-              href={`/${locale}/admin/orders?${buildOrdersQuery(filters, filters.page - 1)}`}
-              className="font-medium hover:underline"
-            >
-              Previous
-            </Link>
-          ) : null}
-          <span>
-            Page {filters.page} / {totalPages}
-          </span>
-          {filters.page < totalPages ? (
-            <Link
-              href={`/${locale}/admin/orders?${buildOrdersQuery(filters, filters.page + 1)}`}
-              className="font-medium hover:underline"
-            >
-              Next
-            </Link>
-          ) : null}
-        </nav>
-      ) : null}
+      <AdminPager
+        locale={locale}
+        page={filters.page}
+        totalPages={totalPages}
+        hrefFor={(page) =>
+          `/${locale}/admin/orders?${buildOrdersQuery(filters, page)}`
+        }
+      />
     </section>
   );
 }

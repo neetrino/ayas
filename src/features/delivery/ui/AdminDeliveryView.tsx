@@ -5,10 +5,10 @@ import { useState, useTransition } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { Card } from "@/components/ui/Card";
 import {
   ConfirmDialog,
-  deleteConfirmDescription,
 } from "@/components/ui/ConfirmDialog";
 import {
   ADMIN_PAGE_SUBTITLE,
@@ -41,6 +41,7 @@ export function AdminDeliveryView({
   locale,
   locations,
 }: AdminDeliveryViewProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingLocation, setEditingLocation] =
@@ -89,9 +90,9 @@ export function AdminDeliveryView({
     <section>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className={ADMIN_PAGE_TITLE}>Delivery</h1>
+          <h1 className={ADMIN_PAGE_TITLE}>{copy.delivery.title}</h1>
           <p className={`mt-1 ${ADMIN_PAGE_SUBTITLE}`}>
-            Set delivery prices by country and city for checkout.
+            {copy.delivery.subtitle}
           </p>
         </div>
         <Button
@@ -101,7 +102,7 @@ export function AdminDeliveryView({
           className="inline-flex items-center gap-1.5"
         >
           <Plus className="h-4 w-4" aria-hidden />
-          Add Location
+          {copy.delivery.add}
         </Button>
       </div>
 
@@ -110,19 +111,18 @@ export function AdminDeliveryView({
       <Card className={ADMIN_TABLE_CARD}>
         {locations.length === 0 ? (
           <p className={`${ADMIN_TABLE_STATE_INSET} text-sm text-gray-600`}>
-            No delivery locations yet. Add a location to offer delivery at
-            checkout.
+            {copy.delivery.empty}
           </p>
         ) : (
           <div className={ADMIN_TABLE_OUTER_SCROLL}>
             <table className={ADMIN_TABLE}>
               <thead className={ADMIN_TABLE_THEAD}>
                 <tr>
-                  <th className={ADMIN_TABLE_TH}>Country</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>City</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Price</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Free from</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Actions</th>
+                  <th className={ADMIN_TABLE_TH}>{copy.common.country}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.city}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.price}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.delivery.freeFrom}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.actions}</th>
                 </tr>
               </thead>
               <tbody className={ADMIN_TABLE_TBODY}>
@@ -185,10 +185,15 @@ export function AdminDeliveryView({
 
       <ConfirmDialog
         open={pendingDelete !== null}
-        title="Delete"
+        title={copy.common.delete}
+        confirmLabel={copy.common.delete}
+        cancelLabel={copy.common.cancel}
         description={
           pendingDelete
-            ? deleteConfirmDescription("delivery location", pendingDelete.city)
+            ? fillAdmin(copy.common.deleteConfirm, {
+                entity: copy.common.entities.deliveryLocation,
+                name: pendingDelete.city,
+              })
             : ""
         }
         isPending={isPending}

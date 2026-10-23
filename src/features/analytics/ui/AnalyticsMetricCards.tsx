@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ClipboardList,
   DollarSign,
@@ -6,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 
 type MetricTone = "blue" | "green" | "purple";
 
@@ -51,21 +54,22 @@ export function AnalyticsMetricCards({
   revenueLabel,
   userCount,
 }: AnalyticsMetricCardsProps) {
+  const copy = useAdminCopy();
   const metrics: MetricCard[] = [
     {
-      label: "Total Orders",
+      label: copy.analytics.totalOrders,
       value: String(orderCount),
       tone: "blue",
       icon: ClipboardList,
     },
     {
-      label: "Total Revenue",
+      label: copy.analytics.totalRevenue,
       value: revenueLabel,
       tone: "green",
       icon: DollarSign,
     },
     {
-      label: "Total Users",
+      label: copy.analytics.totalUsers,
       value: String(userCount),
       tone: "purple",
       icon: Users,

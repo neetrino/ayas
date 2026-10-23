@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { listAdminPromotions } from "@/features/promotions/application/queries";
 import { adminPromotionsFilterSchema } from "@/features/promotions/schemas/admin-promotions";
+import { AdminPager } from "@/features/admin/ui/AdminPager";
 import { AdminCouponsView } from "@/features/promotions/ui/AdminCouponsView";
 import { isLocale } from "@/lib/i18n/config";
 
@@ -52,29 +52,12 @@ export default async function AdminCouponsPage({
   return (
     <>
       <AdminCouponsView locale={locale} coupons={rows} />
-      {totalPages > 1 ? (
-        <nav className="mt-4 flex items-center gap-3 text-sm text-gray-700">
-          {filters.page > 1 ? (
-            <Link
-              href={`/${locale}/admin/coupons?page=${filters.page - 1}`}
-              className="font-medium hover:underline"
-            >
-              Previous
-            </Link>
-          ) : null}
-          <span>
-            Page {filters.page} / {totalPages}
-          </span>
-          {filters.page < totalPages ? (
-            <Link
-              href={`/${locale}/admin/coupons?page=${filters.page + 1}`}
-              className="font-medium hover:underline"
-            >
-              Next
-            </Link>
-          ) : null}
-        </nav>
-      ) : null}
+      <AdminPager
+        locale={locale}
+        page={filters.page}
+        totalPages={totalPages}
+        hrefFor={(page) => `/${locale}/admin/coupons?page=${page}`}
+      />
     </>
   );
 }

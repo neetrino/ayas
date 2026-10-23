@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/Button";
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { SideSheet } from "@/components/ui/SideSheet";
 import type { AdminTeacherListItem } from "@/features/teachers/application/queries";
 import {
@@ -65,6 +66,7 @@ export function TeacherDrawer({
   onClose,
   teacher = null,
 }: TeacherDrawerProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const isEdit = teacher != null;
   const [activeLocale, setActiveLocale] = useState<Locale>(() => firstLocale(teacher));
@@ -106,7 +108,7 @@ export function TeacherDrawer({
     }
     const parsedOrder = Number(sortOrder);
     if (!Number.isInteger(parsedOrder)) {
-      setError("Sort order must be a whole number.");
+      setError(copy.teachers.sortWhole);
       return;
     }
 
@@ -137,12 +139,12 @@ export function TeacherDrawer({
     <SideSheet
       open={open}
       onClose={onClose}
-      ariaLabel={isEdit ? "Edit teacher" : "Add teacher"}
+      ariaLabel={isEdit ? copy.teachers.edit : copy.teachers.add}
       panelClassName="w-full md:w-1/2 md:max-w-none"
     >
       <div className="border-b border-gray-200 px-5 py-4">
         <h2 className="text-lg font-semibold text-gray-900">
-          {isEdit ? "Edit teacher" : "Add teacher"}
+          {isEdit ? copy.teachers.edit : copy.teachers.add}
         </h2>
       </div>
       <form
@@ -190,10 +192,10 @@ export function TeacherDrawer({
         </div>
         <div className="flex justify-end gap-2 border-t border-gray-200 px-5 py-4">
           <Button type="button" variant="secondary" disabled={isPending} onClick={onClose}>
-            Cancel
+            {copy.common.cancel}
           </Button>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving…" : "Save"}
+            {isPending ? copy.common.saving : copy.common.save}
           </Button>
         </div>
       </form>

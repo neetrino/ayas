@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 
 import { SelectDropdown } from "@/components/ui/SelectDropdown";
 import { ADMIN_LABEL } from "@/features/admin/ui/admin-form-classes";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { AdminSearchInput } from "@/features/admin/ui/AdminSearchInput";
 import type { AdminCategoryOption } from "@/features/products/application/list-admin-products";
 
@@ -19,12 +20,6 @@ type AdminProductsFiltersProps = {
   dir: string;
 };
 
-const STOCK_OPTIONS = [
-  { label: "All Products", value: "all" },
-  { label: "In stock", value: "in_stock" },
-  { label: "Out of stock", value: "out_of_stock" },
-  { label: "Low stock", value: "low_stock" },
-] as const;
 
 export function AdminProductsFilters({
   total,
@@ -36,7 +31,14 @@ export function AdminProductsFilters({
   sort,
   dir,
 }: AdminProductsFiltersProps) {
+  const copy = useAdminCopy();
   const formRef = useRef<HTMLFormElement>(null);
+  const stockOptions = [
+    { label: copy.products.allProducts, value: "all" },
+    { label: copy.products.inStock, value: "in_stock" },
+    { label: copy.products.outOfStock, value: "out_of_stock" },
+    { label: copy.products.lowStock, value: "low_stock" },
+  ];
   const [categoryValue, setCategoryValue] = useState(categoryId ?? "");
   const [stockValue, setStockValue] = useState(stock);
 
@@ -59,7 +61,9 @@ export function AdminProductsFilters({
 
   return (
     <div className="mb-4">
-      <p className="mb-3 text-sm text-gray-600">Total products: {total}</p>
+      <p className="mb-3 text-sm text-gray-600">
+        {fillAdmin(copy.products.total, { count: total })}
+      </p>
       <form
         ref={formRef}
         method="get"
@@ -68,44 +72,44 @@ export function AdminProductsFilters({
         <input type="hidden" name="sort" value={sort} />
         <input type="hidden" name="dir" value={dir} />
         <label>
-          <span className={ADMIN_LABEL}>Search by title or slug</span>
+          <span className={ADMIN_LABEL}>{copy.products.searchTitle}</span>
           <AdminSearchInput
             name="q"
             defaultValue={q ?? ""}
-            placeholder="Search by title or slug..."
+            placeholder={copy.products.searchTitlePlaceholder}
             wrapperClassName="mt-1"
-            aria-label="Search by title or slug"
+            aria-label={copy.products.searchTitle}
           />
         </label>
         <label>
-          <span className={ADMIN_LABEL}>Search by SKU</span>
+          <span className={ADMIN_LABEL}>{copy.products.searchSku}</span>
           <AdminSearchInput
             name="sku"
             defaultValue={sku ?? ""}
-            placeholder="Enter SKU code"
+            placeholder={copy.products.searchSkuPlaceholder}
             wrapperClassName="mt-1"
-            aria-label="Search by SKU"
+            aria-label={copy.products.searchSku}
           />
         </label>
         <div>
-          <span className={ADMIN_LABEL}>Filter by Category</span>
+          <span className={ADMIN_LABEL}>{copy.products.filterCategory}</span>
           <SelectDropdown
             name="categoryId"
-            ariaLabel="Filter by category"
+            ariaLabel={copy.products.filterCategory}
             value={categoryValue}
-            allLabel="All Categories"
+            allLabel={copy.products.allCategories}
             options={categoryOptions}
             className="mt-1"
             onValueChange={applyCategory}
           />
         </div>
         <div>
-          <span className={ADMIN_LABEL}>Filter by Stock</span>
+          <span className={ADMIN_LABEL}>{copy.products.filterStock}</span>
           <SelectDropdown
             name="stock"
-            ariaLabel="Filter by stock"
+            ariaLabel={copy.products.filterStock}
             value={stockValue}
-            options={STOCK_OPTIONS}
+            options={stockOptions}
             className="mt-1"
             onValueChange={applyStock}
           />

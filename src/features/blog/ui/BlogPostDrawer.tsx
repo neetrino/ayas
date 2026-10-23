@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { SelectDropdown } from "@/components/ui/SelectDropdown";
 import { SideSheet } from "@/components/ui/SideSheet";
 import {
@@ -99,6 +100,7 @@ export function BlogPostDrawer({
   post = null,
   relatedOptions,
 }: BlogPostDrawerProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isEdit = post != null;
@@ -195,12 +197,12 @@ export function BlogPostDrawer({
     <SideSheet
       open={open}
       onClose={onClose}
-      ariaLabel={isEdit ? "Edit blog post" : "Add blog post"}
+      ariaLabel={isEdit ? copy.blog.edit : copy.blog.add}
       panelClassName="w-full max-w-lg"
     >
         <div className="border-b border-gray-200 px-5 py-4">
           <h2 className="text-lg font-semibold text-gray-900">
-            {isEdit ? "Edit blog post" : "Add blog post"}
+            {isEdit ? copy.blog.edit : copy.blog.add}
           </h2>
         </div>
 
@@ -211,7 +213,7 @@ export function BlogPostDrawer({
             const current = drafts[activeLocale];
             const slug = resolvedSlug(current);
             if (!current.title.trim() || !current.content.trim()) {
-              setError("Title and full text are required.");
+              setError(copy.blog.titleRequired);
               return;
             }
 
@@ -496,7 +498,7 @@ export function BlogPostDrawer({
 
           <div className="border-t border-gray-200 px-5 py-4">
             <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Saving…" : "Save"}
+              {isPending ? copy.common.saving : copy.common.save}
             </Button>
           </div>
         </form>

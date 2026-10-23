@@ -29,6 +29,7 @@ locales/
     blog.json
     catalog.json
     wishlist.json
+    admin.json
   en/
     ...same namespaces
   ru/

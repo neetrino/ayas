@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { ADMIN_INPUT, ADMIN_LABEL, ADMIN_TEXTAREA } from "@/features/admin/ui/admin-form-classes";
 import { SelectDropdown } from "@/components/ui/SelectDropdown";
 import type { EventLocaleDraft } from "@/features/events/domain/event-draft";
@@ -42,10 +43,11 @@ export function CopyFields({
   disabled: boolean;
   onChange: (patch: Partial<EventLocaleDraft>) => void;
 }) {
+  const copy = useAdminCopy();
   return (
     <div className="space-y-4">
       <label className="block">
-        <span className={ADMIN_LABEL}>Name</span>
+        <span className={ADMIN_LABEL}>{copy.common.name}</span>
         <input
           value={draft.name}
           disabled={disabled}
@@ -54,7 +56,7 @@ export function CopyFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Description</span>
+        <span className={ADMIN_LABEL}>{copy.common.description}</span>
         <textarea
           rows={5}
           value={draft.description}
@@ -64,7 +66,7 @@ export function CopyFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Venue</span>
+        <span className={ADMIN_LABEL}>{copy.events.venue}</span>
         <input
           value={draft.venue}
           disabled={disabled}
@@ -73,7 +75,7 @@ export function CopyFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Address</span>
+        <span className={ADMIN_LABEL}>{copy.events.address}</span>
         <input
           value={draft.address}
           disabled={disabled}
@@ -110,15 +112,16 @@ export function SlugField({
   disabled: boolean;
   onChange: (value: string) => void;
 }) {
+  const copy = useAdminCopy();
   return (
     <label className="block">
-      <span className={ADMIN_LABEL}>Slug</span>
+      <span className={ADMIN_LABEL}>{copy.common.slug}</span>
       <input
         value={value}
         disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
         className={ADMIN_INPUT}
-        placeholder="Same address for every language"
+        placeholder={copy.events.addressPlaceholder}
       />
     </label>
   );
@@ -139,10 +142,11 @@ export function ScheduleFields({
   onAge,
   onStatus,
 }: ScheduleFieldsProps) {
+  const copy = useAdminCopy();
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <label className="block">
-        <span className={ADMIN_LABEL}>Date</span>
+        <span className={ADMIN_LABEL}>{copy.common.date}</span>
         <input
           required
           type="date"
@@ -153,7 +157,7 @@ export function ScheduleFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Start time</span>
+        <span className={ADMIN_LABEL}>{copy.events.startTime}</span>
         <input
           required
           type="time"
@@ -164,7 +168,7 @@ export function ScheduleFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Duration (minutes)</span>
+        <span className={ADMIN_LABEL}>{copy.events.duration}</span>
         <input
           required
           inputMode="numeric"
@@ -175,7 +179,7 @@ export function ScheduleFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Ticket price (AMD)</span>
+        <span className={ADMIN_LABEL}>{copy.events.ticketPrice}</span>
         <input
           required
           inputMode="numeric"
@@ -186,24 +190,24 @@ export function ScheduleFields({
         />
       </label>
       <label className="block sm:col-span-2">
-        <span className={ADMIN_LABEL}>Age restriction</span>
+        <span className={ADMIN_LABEL}>{copy.events.age}</span>
         <input
           value={age}
           disabled={disabled}
           onChange={(event) => onAge(event.target.value)}
           className={ADMIN_INPUT}
-          placeholder="Leave empty when there is none"
+          placeholder={copy.events.agePlaceholder}
         />
       </label>
       <div className="sm:col-span-2">
-        <span className={ADMIN_LABEL}>Status</span>
+        <span className={ADMIN_LABEL}>{copy.common.status}</span>
         <SelectDropdown
-          ariaLabel="Status"
+          ariaLabel={copy.common.status}
           value={status}
           options={[
-            { label: "Draft", value: "DRAFT" },
-            { label: "Published", value: "PUBLISHED" },
-            { label: "Archived", value: "ARCHIVED" },
+            { label: copy.common.draft, value: "DRAFT" },
+            { label: copy.common.published, value: "PUBLISHED" },
+            { label: copy.common.archived, value: "ARCHIVED" },
           ]}
           disabled={disabled}
           deferChange={false}

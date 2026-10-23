@@ -1,6 +1,9 @@
+"use client";
+
 import { Package, ShoppingBag, Tag, TrendingUp } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import type {
   AnalyticsTopCategory,
   AnalyticsTopProduct,
@@ -38,12 +41,13 @@ export function AnalyticsTopRankings({
   categories,
   formatMoney,
 }: AnalyticsTopRankingsProps) {
+  const copy = useAdminCopy();
   return (
     <div className="mb-6 grid gap-4 lg:grid-cols-2">
       <Card className="rounded-2xl p-5 sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-gray-900">
-            Top Selling Products
+            {copy.analytics.topProducts}
           </h2>
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
             <TrendingUp className="h-4 w-4" aria-hidden />
@@ -76,10 +80,16 @@ export function AnalyticsTopRankings({
                 <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
                   <span className="inline-flex items-center gap-1">
                     <ShoppingBag className="h-3 w-3" aria-hidden />
-                    {product.quantitySold} sold
+                    {fillAdmin(copy.analytics.sold, {
+                      count: product.quantitySold,
+                    })}
                   </span>
                   <span>|</span>
-                  <span>{product.orderCount} orders</span>
+                  <span>
+                    {fillAdmin(copy.analytics.orders, {
+                      count: product.orderCount,
+                    })}
+                  </span>
                 </p>
               </div>
               <p className="shrink-0 text-sm font-bold text-gray-900">
@@ -89,7 +99,7 @@ export function AnalyticsTopRankings({
           ))}
           {products.length === 0 ? (
             <p className="py-8 text-center text-sm text-gray-500">
-              No product sales in this range.
+              {copy.analytics.noProducts}
             </p>
           ) : null}
         </div>
@@ -97,7 +107,9 @@ export function AnalyticsTopRankings({
 
       <Card className="rounded-2xl p-5 sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-gray-900">Top Categories</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            {copy.analytics.topCategories}
+          </h2>
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
             <Tag className="h-4 w-4" aria-hidden />
           </div>
@@ -114,9 +126,17 @@ export function AnalyticsTopRankings({
                   {category.title}
                 </p>
                 <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                  <span>{category.itemCount} items</span>
+                  <span>
+                    {fillAdmin(copy.analytics.items, {
+                      count: category.itemCount,
+                    })}
+                  </span>
                   <span>|</span>
-                  <span>{category.orderCount} orders</span>
+                  <span>
+                    {fillAdmin(copy.analytics.orders, {
+                      count: category.orderCount,
+                    })}
+                  </span>
                 </p>
               </div>
               <p className="shrink-0 text-sm font-bold text-gray-900">
@@ -126,7 +146,7 @@ export function AnalyticsTopRankings({
           ))}
           {categories.length === 0 ? (
             <p className="py-8 text-center text-sm text-gray-500">
-              No category sales in this range.
+              {copy.analytics.noCategories}
             </p>
           ) : null}
         </div>

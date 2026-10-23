@@ -3,10 +3,10 @@
 import { useRef } from "react";
 
 import { SelectDropdown } from "@/components/ui/SelectDropdown";
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { ADMIN_INPUT, ADMIN_LABEL } from "@/features/admin/ui/admin-form-classes";
 import {
   BLOG_CATEGORIES,
-  BLOG_CATEGORY_ADMIN_LABELS,
   BLOG_GALLERY_LIMIT,
   BLOG_RELATED_LIMIT,
   isBlogCategory,
@@ -55,19 +55,20 @@ export function BlogPostExtras({
   onRemoveGallery,
   onRemovePending,
 }: BlogPostExtrasProps) {
+  const copy = useAdminCopy();
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const galleryCount = gallery.length + pendingGallery.length;
 
   return (
     <>
       <div>
-        <span className={ADMIN_LABEL}>Category</span>
+        <span className={ADMIN_LABEL}>{copy.common.category}</span>
         <SelectDropdown
-          ariaLabel="Category"
+          ariaLabel={copy.common.category}
           value={category}
           options={BLOG_CATEGORIES.map((value) => ({
             value,
-            label: BLOG_CATEGORY_ADMIN_LABELS[value],
+            label: copy.blog.categories[value],
           }))}
           disabled={disabled}
           deferChange={false}
@@ -81,11 +82,11 @@ export function BlogPostExtras({
       </div>
 
       <label className="block">
-        <span className={ADMIN_LABEL}>Video</span>
+        <span className={ADMIN_LABEL}>{copy.blog.video}</span>
         <input
           value={videoUrl}
           onChange={(event) => onVideoUrlChange(event.target.value)}
-          placeholder="https://www.youtube.com/watch?v=…"
+          placeholder={copy.blog.videoPlaceholder}
           className={ADMIN_INPUT}
           disabled={disabled}
         />
@@ -95,7 +96,7 @@ export function BlogPostExtras({
       </label>
 
       <div>
-        <span className={ADMIN_LABEL}>Gallery</span>
+        <span className={ADMIN_LABEL}>{copy.common.gallery}</span>
         <div className="mt-1">
           <button
             type="button"
@@ -132,7 +133,7 @@ export function BlogPostExtras({
       </div>
 
       <fieldset>
-        <legend className={ADMIN_LABEL}>Related articles</legend>
+        <legend className={ADMIN_LABEL}>{copy.blog.related}</legend>
         {relatedOptions.length === 0 ? (
           <p className="mt-1 text-xs text-gray-500">
             Save another post first, then you can relate it here.

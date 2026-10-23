@@ -2,13 +2,21 @@
 
 import Link from "next/link";
 
+import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { useAdminSidebarCollapse } from "@/features/admin/ui/AdminSidebarCollapseContext";
+import type { Locale } from "@/lib/i18n/config";
 
 type AdminSidebarBrandProps = {
-  locale: string;
+  locale: Locale;
+  languageLabel: string;
 };
 
-export function AdminSidebarBrand({ locale }: AdminSidebarBrandProps) {
+export function AdminSidebarBrand({
+  locale,
+  languageLabel,
+}: AdminSidebarBrandProps) {
+  const copy = useAdminCopy();
   const { collapsed, toggleCollapsed } = useAdminSidebarCollapse();
 
   return (
@@ -23,7 +31,7 @@ export function AdminSidebarBrand({ locale }: AdminSidebarBrandProps) {
         <Link
           href={`/${locale}`}
           className="flex h-9 w-9 items-center justify-center rounded-md text-sm font-bold text-gray-900 hover:bg-gray-50"
-          title="White Shop home"
+          title={copy.shell.homeTitle}
         >
           W
         </Link>
@@ -32,7 +40,7 @@ export function AdminSidebarBrand({ locale }: AdminSidebarBrandProps) {
           href={`/${locale}`}
           className="min-w-0 flex-1 rounded-md px-2 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
         >
-          White Shop
+          {copy.shell.brand}
         </Link>
       )}
       <button
@@ -40,8 +48,10 @@ export function AdminSidebarBrand({ locale }: AdminSidebarBrandProps) {
         onClick={toggleCollapsed}
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-gray-200 text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
         aria-expanded={!collapsed}
-        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        aria-label={
+          collapsed ? copy.shell.expandSidebar : copy.shell.collapseSidebar
+        }
+        title={collapsed ? copy.shell.expandSidebar : copy.shell.collapseSidebar}
       >
         {collapsed ? (
           <svg
@@ -69,6 +79,12 @@ export function AdminSidebarBrand({ locale }: AdminSidebarBrandProps) {
           </svg>
         )}
       </button>
+      <LocaleSwitcher
+        locale={locale}
+        label={languageLabel}
+        compact
+        triggerClassName="inline-flex items-center gap-1 px-2 text-xs font-medium text-gray-700"
+      />
     </div>
   );
 }

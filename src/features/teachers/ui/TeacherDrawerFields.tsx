@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { ADMIN_INPUT, ADMIN_LABEL, ADMIN_TEXTAREA } from "@/features/admin/ui/admin-form-classes";
 import { SelectDropdown } from "@/components/ui/SelectDropdown";
 import type { TeacherLocaleDraft } from "@/features/teachers/domain/teacher-draft";
@@ -11,23 +12,6 @@ import {
 } from "@/features/teachers/domain/teacher-rules";
 import { localeLabels, locales, type Locale } from "@/lib/i18n/config";
 
-const ROLE_LABELS: Record<TeacherRole, string> = {
-  ballet: "Classical ballet",
-  contemporary: "Contemporary dance",
-  traditional: "Traditional dance",
-  team: "School team",
-};
-
-const CLASS_LABELS: Record<(typeof TEACHER_CLASS_IDS)[number], string> = {
-  "ballet-children": "Ballet — children",
-  "ballet-teens": "Ballet — teens",
-  "ballet-adults": "Ballet — adults",
-  contemporary: "Contemporary",
-  "traditional-children": "Traditional — children",
-  "traditional-adults": "Traditional — adults",
-  "open-class": "Open class",
-  stage: "Stage",
-};
 
 export function TeacherLocaleTabs({
   active,
@@ -65,10 +49,11 @@ export function TeacherCopyFields({
   disabled: boolean;
   onChange: (patch: Partial<TeacherLocaleDraft>) => void;
 }) {
+  const copy = useAdminCopy();
   return (
     <div className="space-y-4">
       <label className="block">
-        <span className={ADMIN_LABEL}>Name</span>
+        <span className={ADMIN_LABEL}>{copy.common.name}</span>
         <input
           value={draft.name}
           disabled={disabled}
@@ -77,7 +62,7 @@ export function TeacherCopyFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Experience</span>
+        <span className={ADMIN_LABEL}>{copy.teachers.experience}</span>
         <textarea
           rows={3}
           value={draft.experience}
@@ -87,7 +72,7 @@ export function TeacherCopyFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Biography</span>
+        <span className={ADMIN_LABEL}>{copy.teachers.biography}</span>
         <textarea
           rows={5}
           value={draft.biography}
@@ -123,15 +108,16 @@ export function TeacherProfileFields({
   onStatus,
   onToggleClass,
 }: TeacherProfileFieldsProps) {
+  const copy = useAdminCopy();
   return (
     <div className="space-y-4">
       <div>
-        <span className={ADMIN_LABEL}>Specialization</span>
+        <span className={ADMIN_LABEL}>{copy.teachers.specialization}</span>
         <SelectDropdown
-          ariaLabel="Specialization"
+          ariaLabel={copy.teachers.specialization}
           value={role}
           options={TEACHER_ROLES.map((item) => ({
-            label: ROLE_LABELS[item],
+            label: copy.teachers.roles[item],
             value: item,
           }))}
           disabled={disabled}
@@ -141,7 +127,7 @@ export function TeacherProfileFields({
         />
       </div>
       <label className="block">
-        <span className={ADMIN_LABEL}>Sort order</span>
+        <span className={ADMIN_LABEL}>{copy.common.sortOrder}</span>
         <input
           inputMode="numeric"
           value={sortOrder}
@@ -151,14 +137,14 @@ export function TeacherProfileFields({
         />
       </label>
       <div>
-        <span className={ADMIN_LABEL}>Status</span>
+        <span className={ADMIN_LABEL}>{copy.common.status}</span>
         <SelectDropdown
-          ariaLabel="Status"
+          ariaLabel={copy.common.status}
           value={status}
           options={[
-            { label: "Draft", value: "DRAFT" },
-            { label: "Published", value: "PUBLISHED" },
-            { label: "Archived", value: "ARCHIVED" },
+            { label: copy.common.draft, value: "DRAFT" },
+            { label: copy.common.published, value: "PUBLISHED" },
+            { label: copy.common.archived, value: "ARCHIVED" },
           ]}
           disabled={disabled}
           deferChange={false}
@@ -167,7 +153,7 @@ export function TeacherProfileFields({
         />
       </div>
       <fieldset className="space-y-2">
-        <legend className={ADMIN_LABEL}>Classes</legend>
+        <legend className={ADMIN_LABEL}>{copy.teachers.classesLabel}</legend>
         {TEACHER_CLASS_IDS.map((id) => (
           <label key={id} className="flex items-center gap-2 text-sm text-gray-800">
             <input
@@ -176,7 +162,7 @@ export function TeacherProfileFields({
               disabled={disabled}
               onChange={() => onToggleClass(id)}
             />
-            {CLASS_LABELS[id]}
+            {copy.teachers.classOptions[id]}
           </label>
         ))}
       </fieldset>
@@ -195,14 +181,15 @@ export function TeacherPortraitField({
   onPick: (file: File) => void;
   onRemove: () => void;
 }) {
+  const copy = useAdminCopy();
   return (
     <div className="space-y-3">
-      <span className={ADMIN_LABEL}>Portrait</span>
+      <span className={ADMIN_LABEL}>{copy.teachers.portrait}</span>
       {preview ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={preview} alt="" className="h-40 w-32 rounded-lg object-cover" />
       ) : (
-        <p className="text-sm text-gray-500">No portrait yet.</p>
+        <p className="text-sm text-gray-500">{copy.teachers.noPortrait}</p>
       )}
       <input
         type="file"
@@ -223,7 +210,7 @@ export function TeacherPortraitField({
           onClick={onRemove}
           className="text-sm font-medium text-red-700"
         >
-          Remove portrait
+          {copy.common.remove}
         </button>
       ) : null}
     </div>

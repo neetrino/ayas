@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
+import { fillAdmin, useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { Card } from "@/components/ui/Card";
 import {
   ConfirmDialog,
-  deleteConfirmDescription,
 } from "@/components/ui/ConfirmDialog";
 import {
   ADMIN_PAGE_TITLE,
@@ -70,6 +70,7 @@ export function AdminCategoriesView({
   locale,
   categories,
 }: AdminCategoriesViewProps) {
+  const copy = useAdminCopy();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -161,7 +162,7 @@ export function AdminCategoriesView({
   return (
     <section>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className={ADMIN_PAGE_TITLE}>Categories</h1>
+        <h1 className={ADMIN_PAGE_TITLE}>{copy.categories.title}</h1>
         <Button
           type="button"
           size="sm"
@@ -172,21 +173,21 @@ export function AdminCategoriesView({
           className="inline-flex items-center gap-1.5"
         >
           <Plus className="h-4 w-4" aria-hidden />
-          Add Category
+          {copy.categories.add}
         </Button>
       </div>
 
       <AdminSearchInput
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Enter category title"
+        placeholder={copy.categories.searchPlaceholder}
         wrapperClassName="mb-4"
-        aria-label="Search categories"
+        aria-label={copy.categories.searchLabel}
       />
 
       {isFiltering ? (
         <p className="mb-3 text-xs text-gray-500">
-          Clear search to reorder categories.
+          {copy.categories.reorderLocked}
         </p>
       ) : null}
 
@@ -196,8 +197,8 @@ export function AdminCategoriesView({
         {visible.length === 0 ? (
           <p className={`${ADMIN_TABLE_STATE_INSET} text-sm text-gray-600`}>
             {categories.length === 0
-              ? "No categories yet."
-              : "No categories match this search."}
+              ? copy.categories.empty
+              : copy.categories.noMatch}
           </p>
         ) : (
           <div className={ADMIN_TABLE_OUTER_SCROLL}>
@@ -205,10 +206,10 @@ export function AdminCategoriesView({
               <thead className={ADMIN_TABLE_THEAD}>
                 <tr>
                   <th className={`${ADMIN_TABLE_TH} w-8`} aria-label="Reorder" />
-                  <th className={ADMIN_TABLE_TH}>Image</th>
-                  <th className={ADMIN_TABLE_TH}>Category Title</th>
-                  <th className={ADMIN_TABLE_TH}>Category</th>
-                  <th className={ADMIN_TABLE_TH_CENTER}>Actions</th>
+                  <th className={ADMIN_TABLE_TH}>{copy.categories.image}</th>
+                  <th className={ADMIN_TABLE_TH}>{copy.categories.categoryTitle}</th>
+                  <th className={ADMIN_TABLE_TH}>{copy.common.category}</th>
+                  <th className={ADMIN_TABLE_TH_CENTER}>{copy.common.actions}</th>
                 </tr>
               </thead>
               <tbody className={ADMIN_TABLE_TBODY}>
@@ -343,10 +344,15 @@ export function AdminCategoriesView({
 
       <ConfirmDialog
         open={pendingDelete !== null}
-        title="Delete"
+        title={copy.common.delete}
+        confirmLabel={copy.common.delete}
+        cancelLabel={copy.common.cancel}
         description={
           pendingDelete
-            ? deleteConfirmDescription("category", pendingDelete.title)
+            ? fillAdmin(copy.common.deleteConfirm, {
+                entity: copy.common.entities.category,
+                name: pendingDelete.title,
+              })
             : ""
         }
         isPending={isPending}

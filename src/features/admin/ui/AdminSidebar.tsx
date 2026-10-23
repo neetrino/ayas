@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
+import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import {
   getAdminMenuItems,
   isAdminTabActive,
@@ -17,9 +19,11 @@ import {
   ADMIN_SIDEBAR_NAV,
 } from "@/features/admin/ui/admin-shell-classes";
 import { useAdminProductsSubnavExpanded } from "@/features/admin/ui/useAdminProductsSubnavExpanded";
+import type { Locale } from "@/lib/i18n/config";
 
 type AdminSidebarProps = {
-  locale: string;
+  locale: Locale;
+  languageLabel: string;
 };
 
 function isNestedVisible(
@@ -35,9 +39,10 @@ function isNestedVisible(
   return productsNestedExpanded;
 }
 
-export function AdminSidebar({ locale }: AdminSidebarProps) {
+export function AdminSidebar({ locale, languageLabel }: AdminSidebarProps) {
+  const copy = useAdminCopy();
   const pathname = usePathname() ?? `/${locale}/admin`;
-  const tabs = getAdminMenuItems(locale);
+  const tabs = getAdminMenuItems(locale, copy.nav);
   const { collapsed } = useAdminSidebarCollapse();
   const [productsNestedExpanded, toggleProductsNested] =
     useAdminProductsSubnavExpanded(pathname, locale);
@@ -52,13 +57,16 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
             href={`/${locale}`}
             className="min-w-0 shrink text-sm font-semibold text-gray-900"
           >
-            White Shop
+            {copy.shell.brand}
           </Link>
-          <AdminMenuDrawer locale={locale} pathname={pathname} />
+          <div className="flex items-center gap-2">
+            <LocaleSwitcher locale={locale} label={languageLabel} compact />
+            <AdminMenuDrawer locale={locale} pathname={pathname} />
+          </div>
         </div>
       </div>
       <aside className={`${ADMIN_SIDEBAR_ASIDE} ${asideWidthClass}`}>
-        <AdminSidebarBrand locale={locale} />
+        <AdminSidebarBrand locale={locale} languageLabel={languageLabel} />
         <nav
           className={`${ADMIN_SIDEBAR_NAV} ${collapsed ? "px-1" : "px-2"}`}
         >
@@ -111,8 +119,8 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
                   <button
                     type="button"
                     aria-expanded={productsNestedExpanded}
-                    aria-label="Toggle product subpages"
-                    title="Toggle product subpages"
+                    aria-label={copy.shell.toggleProductSubpages}
+                    title={copy.shell.toggleProductSubpages}
                     onClick={(event) => {
                       event.preventDefault();
                       toggleProductsNested();
