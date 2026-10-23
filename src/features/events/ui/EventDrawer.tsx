@@ -148,7 +148,7 @@ export function EventDrawer({
       open={open}
       onClose={onClose}
       ariaLabel={isEdit ? "Edit event" : "Add event"}
-      panelClassName="w-full max-w-lg"
+      panelClassName="w-full md:w-1/2 md:max-w-none"
     >
       <div className="border-b border-gray-200 px-5 py-4">
         <h2 className="text-lg font-semibold text-gray-900">
