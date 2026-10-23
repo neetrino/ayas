@@ -120,15 +120,31 @@ export function AdminEventsView({ locale, events }: AdminEventsViewProps) {
               className="rounded-xl border border-gray-200 p-4 shadow-sm"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-gray-900">
-                    {event.title}
-                  </p>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {event.date} · {event.startTime}
-                    {event.venue ? ` · ${event.venue}` : ""}
-                    {` · ${event.priceAmount} AMD`}
-                  </p>
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    {event.posterUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={event.posterUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-[10px] font-medium text-gray-400">
+                        Event
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-gray-900">
+                      {event.title}
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {event.date} · {event.startTime}
+                      {event.venue ? ` · ${event.venue}` : ""}
+                      {` · ${event.priceAmount} AMD`}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-1 sm:justify-end">
                   <span className={`${ADMIN_BADGE} ${statusBadgeClass(event.status)}`}>
