@@ -1,3 +1,4 @@
+import { isClassCode } from "@/features/classes/domain/class-rules";
 import type { Locale } from "@/lib/i18n/config";
 
 export const TEACHER_STATUSES = ["DRAFT", "PUBLISHED", "ARCHIVED"] as const;
@@ -12,19 +13,6 @@ export const TEACHER_ROLES = [
 ] as const;
 
 export type TeacherRole = (typeof TEACHER_ROLES)[number];
-
-export const TEACHER_CLASS_IDS = [
-  "ballet-children",
-  "ballet-teens",
-  "ballet-adults",
-  "contemporary",
-  "traditional-children",
-  "traditional-adults",
-  "open-class",
-  "stage",
-] as const;
-
-export type TeacherClassId = (typeof TEACHER_CLASS_IDS)[number];
 
 export const TEACHER_SORT_MAX = 9999;
 
@@ -45,14 +33,12 @@ export type TeacherRuleError =
   | "INVALID_SORT"
   | "TRANSLATION_REQUIRED";
 
-const CLASS_IDS = new Set<string>(TEACHER_CLASS_IDS);
-
 export function isTeacherRole(value: string): value is TeacherRole {
   return TEACHER_ROLES.some((role) => role === value);
 }
 
-export function isTeacherClassId(value: string): value is TeacherClassId {
-  return CLASS_IDS.has(value);
+export function isTeacherClassId(value: string): boolean {
+  return isClassCode(value);
 }
 
 export function validateTeacherLocaleCopy(

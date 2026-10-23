@@ -15,6 +15,7 @@ export {
 export {
   blogPosts,
   heroSlides,
+  schoolClasses,
   schoolEvents,
   schoolGalleryItems,
   schoolTeachers,
@@ -22,6 +23,8 @@ export {
   type BlogTranslationsJson,
   type HeroTranslation,
   type HeroTranslationsJson,
+  type SchoolClassTranslation,
+  type SchoolClassTranslationsJson,
   type SchoolEventTranslation,
   type SchoolEventTranslationsJson,
   type SchoolGalleryTranslation,

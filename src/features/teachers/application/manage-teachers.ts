@@ -4,6 +4,7 @@ import { and, eq, isNull } from "drizzle-orm";
 
 import { auditLogs, schoolTeachers } from "@/db/schema";
 import { withTransaction } from "@/db/transaction";
+import { missingClassCodes } from "@/features/classes/application/queries";
 import { applyTeacherPortrait } from "@/features/teachers/application/persist-teacher-portrait";
 import {
   revalidateSchoolTeachers,
@@ -99,6 +100,10 @@ export async function createSchoolTeacherAction(
   if (!validated.ok) {
     return validated;
   }
+  const unknownClasses = await missingClassCodes(validated.value.data.classIds);
+  if (unknownClasses.length > 0) {
+    return err("INVALID_CLASS", "Choose classes from the school program.");
+  }
 
   const id = createId();
   try {
@@ -151,6 +156,10 @@ export async function updateSchoolTeacherAction(
   const validated = validatedTeacher(raw);
   if (!validated.ok) {
     return validated;
+  }
+  const unknownClasses = await missingClassCodes(validated.value.data.classIds);
+  if (unknownClasses.length > 0) {
+    return err("INVALID_CLASS", "Choose classes from the school program.");
   }
 
   try {

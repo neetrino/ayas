@@ -6,9 +6,12 @@ import { unstable_cache } from "next/cache";
 import { getDb } from "@/db/client";
 import { schoolGalleryItems, type SchoolGalleryTranslationsJson } from "@/db/schema";
 import { resolveGalleryImageUrl } from "@/features/gallery/application/persist-gallery-image";
-import type { GalleryCard, GalleryStill } from "@/features/gallery/domain/gallery-catalog";
-import { toGalleryCards } from "@/features/gallery/domain/gallery-catalog";
-import type { GallerySourceItem } from "@/features/gallery/domain/gallery-catalog";
+import {
+  toGalleryCards,
+  type GalleryCard,
+  type GallerySourceItem,
+  type GalleryStill,
+} from "@/features/gallery/domain/gallery-catalog";
 import {
   resolveGalleryTranslation,
   type GalleryCategory,

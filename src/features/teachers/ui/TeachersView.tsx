@@ -16,15 +16,26 @@ type PublishedTeacherInput = {
   imageSrc: string | null;
 };
 
+type ClassTitle = {
+  id: string;
+  title: string;
+};
+
 type TeachersViewProps = {
   locale: Locale;
   dictionary: Dictionary;
   published: readonly PublishedTeacherInput[];
+  classTitles: readonly ClassTitle[];
 };
 
 const ROLE_FILTERS = ["ballet", "contemporary", "traditional", "team"] as const;
 
-export function TeachersView({ locale, dictionary, published }: TeachersViewProps) {
+export function TeachersView({
+  locale,
+  dictionary,
+  published,
+  classTitles,
+}: TeachersViewProps) {
   const landing = dictionary.home.landing;
   const teachers = dictionary.teachers;
 
@@ -49,7 +60,7 @@ export function TeachersView({ locale, dictionary, published }: TeachersViewProp
         classesLabel={teachers.fields.classes}
         empty={teachers.empty}
         options={filterOptions(teachers)}
-        people={rosterPeople(locale, teachers, dictionary.classes.programs, published)}
+        people={rosterPeople(locale, teachers, classTitles, published)}
       />
       <HomeCtaSection
         title={landing.cta.title}
@@ -72,7 +83,7 @@ function filterOptions(teachers: Dictionary["teachers"]) {
 function rosterPeople(
   locale: Locale,
   teachers: Dictionary["teachers"],
-  programs: Dictionary["classes"]["programs"],
+  classTitles: readonly ClassTitle[],
   published: readonly PublishedTeacherInput[],
 ): TeacherRosterPerson[] {
   return published.map((person) => ({
@@ -82,7 +93,7 @@ function rosterPeople(
     specialization: roleLabel(teachers.roles, person.roleId),
     experience: person.experience,
     biography: person.biography,
-    classes: taughtClasses(locale, person.classIds, programs),
+    classes: taughtClasses(locale, person.classIds, classTitles),
     imageSrc: person.imageSrc ?? homeAssets.coach,
   }));
 }
@@ -105,10 +116,10 @@ function isTeacherRole(role: string): role is keyof Dictionary["teachers"]["role
 function taughtClasses(
   locale: Locale,
   classIds: readonly string[],
-  programs: Dictionary["classes"]["programs"],
+  classTitles: readonly ClassTitle[],
 ) {
   return classIds.flatMap((id) => {
-    const program = programs.find((item) => item.id === id);
+    const program = classTitles.find((item) => item.id === id);
     if (!program) {
       return [];
     }

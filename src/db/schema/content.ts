@@ -21,6 +21,10 @@ import {
 import {
   blogCategoryEnum,
   blogPostStatusEnum,
+  schoolClassAgeEnum,
+  schoolClassDirectionEnum,
+  schoolClassLevelEnum,
+  schoolClassStatusEnum,
   schoolEventStatusEnum,
   schoolGalleryCategoryEnum,
   schoolGalleryKindEnum,
@@ -74,6 +78,15 @@ export type SchoolTeacherTranslation = {
 
 export type SchoolTeacherTranslationsJson = Partial<
   Record<"hy" | "en" | "ru", SchoolTeacherTranslation>
+>;
+
+export type SchoolClassTranslation = {
+  title: string;
+  summary: string;
+};
+
+export type SchoolClassTranslationsJson = Partial<
+  Record<"hy" | "en" | "ru", SchoolClassTranslation>
 >;
 
 export type SchoolGalleryTranslation = {
@@ -216,6 +229,39 @@ export const schoolTeachers = pgTable(
     check(
       "school_teachers_sort_chk",
       sql`${table.sortOrder} >= 0 AND ${table.sortOrder} <= 9999`,
+    ),
+  ],
+);
+
+export const schoolClasses = pgTable(
+  "school_classes",
+  {
+    id: idColumn(),
+    code: text("code").notNull(),
+    status: schoolClassStatusEnum("status").notNull().default("DRAFT"),
+    direction: schoolClassDirectionEnum("direction").notNull(),
+    age: schoolClassAgeEnum("age").notNull(),
+    level: schoolClassLevelEnum("level").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    translations: jsonb("translations")
+      .$type<SchoolClassTranslationsJson>()
+      .notNull(),
+    createdAt: createdAtColumn(),
+    updatedAt: updatedAtColumn(),
+    deletedAt: deletedAtColumn(),
+  },
+  (table) => [
+    uniqueIndex("school_classes_code_uidx")
+      .on(table.code)
+      .where(sql`${table.deletedAt} IS NULL`),
+    index("school_classes_status_sort_idx").on(table.status, table.sortOrder),
+    check(
+      "school_classes_sort_chk",
+      sql`${table.sortOrder} >= 0 AND ${table.sortOrder} <= 9999`,
+    ),
+    check(
+      "school_classes_code_chk",
+      sql`${table.code} ~ '^[a-z0-9]+(-[a-z0-9]+)*$'`,
     ),
   ],
 );

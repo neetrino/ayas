@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { SideSheet } from "@/components/ui/SideSheet";
+import type { ClassOption } from "@/features/classes/domain/class-rules";
 import type { AdminTeacherListItem } from "@/features/teachers/application/queries";
 import {
   createSchoolTeacherAction,
@@ -30,7 +31,19 @@ type TeacherDrawerProps = {
   open: boolean;
   onClose: () => void;
   teacher?: AdminTeacherListItem | null;
+  classOptions: readonly ClassOption[];
 };
+
+function classChoices(
+  options: readonly ClassOption[],
+  selected: readonly string[],
+): ClassOption[] {
+  const known = new Set(options.map((option) => option.code));
+  const missing = selected
+    .filter((code) => !known.has(code))
+    .map((code) => ({ code, title: code }));
+  return [...options, ...missing];
+}
 
 function firstLocale(teacher: AdminTeacherListItem | null): Locale {
   if (!teacher) {
@@ -65,6 +78,7 @@ export function TeacherDrawer({
   open,
   onClose,
   teacher = null,
+  classOptions,
 }: TeacherDrawerProps) {
   const copy = useAdminCopy();
   const router = useRouter();
@@ -166,6 +180,7 @@ export function TeacherDrawer({
             sortOrder={sortOrder}
             status={status}
             classIds={classIds}
+            classOptions={classChoices(classOptions, classIds)}
             disabled={isPending}
             onRole={setRole}
             onSortOrder={setSortOrder}

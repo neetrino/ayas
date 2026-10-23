@@ -77,6 +77,34 @@ export const schoolTeacherRoleEnum = pgEnum("school_teacher_role", [
   "team",
 ]);
 
+export const schoolClassStatusEnum = pgEnum("school_class_status", [
+  "DRAFT",
+  "PUBLISHED",
+  "ARCHIVED",
+]);
+
+export const schoolClassDirectionEnum = pgEnum("school_class_direction", [
+  "ballet",
+  "contemporary",
+  "traditional",
+  "open",
+]);
+
+export const schoolClassAgeEnum = pgEnum("school_class_age", [
+  "children",
+  "teens",
+  "adults",
+  "youth",
+  "all",
+]);
+
+export const schoolClassLevelEnum = pgEnum("school_class_level", [
+  "beginner",
+  "intermediate",
+  "advanced",
+  "all",
+]);
+
 export const schoolGalleryStatusEnum = pgEnum("school_gallery_status", [
   "DRAFT",
   "PUBLISHED",

@@ -3,20 +3,10 @@
 import { useMemo, useState } from "react";
 
 import { programMatchesFilters } from "@/features/classes/domain/filter-programs";
+import type { ClassCatalogProgram } from "@/features/classes/ui/class-catalog";
 import { ClassProgramCard } from "@/features/classes/ui/ClassProgramCard";
 
-export type ClassCatalogProgram = {
-  id: string;
-  title: string;
-  summary: string;
-  directionId: string;
-  ageId: string;
-  levelId: string;
-  direction: string;
-  age: string;
-  level: string;
-  imageSrc: string;
-};
+export type { ClassCatalogProgram };
 
 type FilterOption = {
   id: string;

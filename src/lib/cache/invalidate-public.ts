@@ -69,6 +69,11 @@ export function invalidateTeachersCache(): void {
   updateTag(CACHE_TAGS.teachers);
 }
 
+/** Invalidates the public class catalog. */
+export function invalidateClassesCache(): void {
+  updateTag(CACHE_TAGS.classes);
+}
+
 /** Invalidates the public school gallery. */
 export function invalidateGalleryCache(): void {
   updateTag(CACHE_TAGS.gallery);

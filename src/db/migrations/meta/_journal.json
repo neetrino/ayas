@@ -57,6 +57,34 @@
       "when": 1792770000000,
       "tag": "0007_school_teachers_featured",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792772226090,
+      "tag": "0008_even_red_shift",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792772300000,
+      "tag": "0009_seed_school_gallery",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792772805678,
+      "tag": "0010_school_classes",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792772900000,
+      "tag": "0011_seed_school_classes",
+      "breakpoints": true
     }
   ]
 }

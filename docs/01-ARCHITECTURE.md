@@ -140,7 +140,7 @@ tests/
 docs/
 ```
 
-Canonical persistence model-ը 27 PostgreSQL table է։ UI copy-ն locale JSON files-ում է, իսկ admin-managed translations-ը entity table-ների validated `translations JSONB` դաշտերում։ Exact inventory-ը՝ [`03-DATA-MODEL.md`](./03-DATA-MODEL.md)։
+Canonical persistence model-ը 28 PostgreSQL table է։ UI copy-ն locale JSON files-ում է, իսկ admin-managed translations-ը entity table-ների validated `translations JSONB` դաշտերում։ Exact inventory-ը՝ [`03-DATA-MODEL.md`](./03-DATA-MODEL.md)։
 
 Յուրաքանչյուր `features/<name>/` module-ը կարող է ունենալ՝
 

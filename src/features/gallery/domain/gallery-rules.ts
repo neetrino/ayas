@@ -1,6 +1,4 @@
 import {
-  GALLERY_CATEGORIES,
-  GALLERY_KINDS,
   isGalleryCategory,
   isGalleryKind,
   type GalleryCategory,
@@ -137,8 +135,4 @@ export function galleryRuleErrorMessage(code: GalleryRuleError): string {
   }
 }
 
-export function isGalleryStatus(value: string): value is GalleryStatus {
-  return GALLERY_STATUSES.some((status) => status === value);
-}
-
-export { GALLERY_CATEGORIES, GALLERY_KINDS, type GalleryCategory, type GalleryKind };
+export type { GalleryCategory, GalleryKind };

@@ -40,7 +40,7 @@ describe("teacher rules", () => {
     expect(
       validateTeacherProfile({
         role: "team",
-        classIds: ["unknown"],
+        classIds: ["Unknown"],
         sortOrder: 1,
         translations: { en: complete },
       }),

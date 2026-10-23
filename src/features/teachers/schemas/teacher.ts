@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 import {
-  TEACHER_CLASS_IDS,
+  CLASS_CODE_MAX,
+  CLASS_CODE_PATTERN,
+} from "@/features/classes/domain/class-rules";
+import {
   TEACHER_ROLES,
   TEACHER_SORT_MAX,
   TEACHER_STATUSES,
@@ -17,7 +20,9 @@ const copySchema = z.object({
 export const upsertSchoolTeacherSchema = z.object({
   status: z.enum(TEACHER_STATUSES).default("DRAFT"),
   role: z.enum(TEACHER_ROLES),
-  classIds: z.array(z.enum(TEACHER_CLASS_IDS)).max(TEACHER_CLASS_IDS.length),
+  classIds: z
+    .array(z.string().trim().min(1).max(CLASS_CODE_MAX).regex(CLASS_CODE_PATTERN))
+    .max(32),
   sortOrder: z.coerce.number().int().min(0).max(TEACHER_SORT_MAX),
   translations: z
     .object({

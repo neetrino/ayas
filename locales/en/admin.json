@@ -13,6 +13,7 @@
     "blog": "Blog",
     "events": "Events",
     "teachers": "Teachers",
+    "classes": "Classes",
     "gallery": "Gallery",
     "messages": "Messages",
     "settings": "Settings"
@@ -130,6 +131,7 @@
     "noFurtherStatus": "No further status changes.",
     "entities": {
       "teacher": "teacher",
+      "class": "class",
       "galleryItem": "gallery item",
       "event": "event",
       "post": "post",
@@ -481,6 +483,43 @@
       "traditional-adults": "Traditional — adults",
       "open-class": "Open class",
       "stage": "Stage"
+    }
+  },
+  "classes": {
+    "title": "Classes",
+    "add": "Add class",
+    "edit": "Edit class",
+    "searchPlaceholder": "Search by title or code",
+    "searchLabel": "Search classes",
+    "empty": "No classes yet.",
+    "noMatch": "No classes match this search.",
+    "titleLabel": "Title",
+    "code": "Code",
+    "codeHint": "Stable id used by teachers. Lowercase letters, numbers, and hyphens. It cannot change later.",
+    "codeInvalid": "Use a code like ballet-children.",
+    "summary": "Summary",
+    "direction": "Direction",
+    "age": "Age group",
+    "level": "Level",
+    "sortWhole": "Sort order must be a whole number.",
+    "directions": {
+      "ballet": "Classical ballet",
+      "contemporary": "Contemporary dance",
+      "traditional": "Traditional dance",
+      "open": "Open class"
+    },
+    "ages": {
+      "children": "Children",
+      "teens": "Teens",
+      "adults": "Adults",
+      "youth": "Teens and adults",
+      "all": "All ages"
+    },
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "all": "All levels"
     }
   },
   "gallery": {

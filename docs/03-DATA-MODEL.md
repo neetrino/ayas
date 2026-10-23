@@ -2,8 +2,8 @@
 
 **Database.** PostgreSQL (Neon)
 **ORM/migrations.** Drizzle ORM / Drizzle Kit
-**Կարգավիճակ.** Canonical 27-table schema migrated; idempotent seed available (`pnpm db:seed`)
-**Canonical table count.** 27
+**Կարգավիճակ.** Canonical 28-table schema migrated; idempotent seed available (`pnpm db:seed`)
+**Canonical table count.** 28
 **Վերջին թարմացում.** 2026-10-23
 
 ## 1. Սխեմայի նպատակը
@@ -29,7 +29,7 @@
 - Financial, stock և audit records-ը hard delete չեն ընդունում։
 - Flexible JSONB-ը միշտ Zod schema/version ունի և business-critical relational կապերը չի փոխարինում։
 
-## 3. Canonical 27-table inventory
+## 3. Canonical 28-table inventory
 
 | # | Table | Domain | Նշանակություն |
 |---:|---|---|---|
@@ -46,20 +46,22 @@
 | 11 | `blog_posts` | Content | Blog content, translations և tags |
 | 12 | `school_events` | Content | School performances: schedule, price, translations, poster |
 | 13 | `school_teachers` | Content | School teachers: specialization, classes, translations, portrait |
-| 14 | `carts` | Commerce | Guest/customer cart identity/lifecycle |
-| 15 | `cart_items` | Commerce | Cart product quantities |
-| 16 | `wishlist_items` | Commerce | Customer wishlist entries |
-| 17 | `promotions` | Pricing | Coupons և automatic discounts մեկ rule model-ում |
-| 18 | `promotion_users` | Pricing | User-restricted promotion allowlist |
-| 19 | `delivery_rules` | Fulfillment | Location-based delivery pricing |
-| 20 | `orders` | Orders | Order, address/money/promotion snapshots, idempotency |
-| 21 | `order_items` | Orders | Immutable purchased-item snapshots |
-| 22 | `order_events` | Orders | Status, notes և payment provider events |
-| 23 | `payments` | Payments | Payment attempts/current provider state |
-| 24 | `reviews` | Engagement | Verified-purchase reviews/moderation |
-| 25 | `contact_messages` | Support | Contact inbox |
-| 26 | `audit_logs` | Security | Immutable admin/security audit |
-| 27 | `outbox_events` | Reliability | Reliable post-commit email/provider/cache work |
+| 14 | `school_classes` | Content | School classes: direction, age, level, translations, stable code |
+| 15 | `school_gallery_items` | Content | School gallery: category, photo/video, translations, still image |
+| 16 | `carts` | Commerce | Guest/customer cart identity/lifecycle |
+| 17 | `cart_items` | Commerce | Cart product quantities |
+| 18 | `wishlist_items` | Commerce | Customer wishlist entries |
+| 19 | `promotions` | Pricing | Coupons և automatic discounts մեկ rule model-ում |
+| 20 | `promotion_users` | Pricing | User-restricted promotion allowlist |
+| 21 | `delivery_rules` | Fulfillment | Location-based delivery pricing |
+| 22 | `orders` | Orders | Order, address/money/promotion snapshots, idempotency |
+| 23 | `order_items` | Orders | Immutable purchased-item snapshots |
+| 24 | `order_events` | Orders | Status, notes և payment provider events |
+| 25 | `payments` | Payments | Payment attempts/current provider state |
+| 26 | `reviews` | Engagement | Verified-purchase reviews/moderation |
+| 27 | `contact_messages` | Support | Contact inbox |
+| 28 | `audit_logs` | Security | Immutable admin/security audit |
+| 29 | `outbox_events` | Reliability | Reliable post-commit email/provider/cache work |
 
 ### Count assumptions
 
@@ -188,7 +190,15 @@ Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), calendar date, start time, duration m
 
 ### 7.4 `school_teachers`
 
-Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), specialization (`ballet`, `contemporary`, `traditional`, `team`), `class_ids JSONB`, sort order `0..9999`, `is_featured` (գլխավոր էջի դասավանդողների բլոկ), optional portrait object key, և `translations JSONB` (name, experience, biography)։ Public roster-ը և about էջը ցույց են տալիս միայն `PUBLISHED` տողերը։ Գլխավոր էջը ցույց է տալիս միայն `PUBLISHED` և `is_featured` տողերը։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։ Սկզբնական հինգ դասավանդողը seed migration-ով է մտել, ապա նշվել է գլխավոր էջի համար։
+Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), specialization (`ballet`, `contemporary`, `traditional`, `team`), `class_ids JSONB` (`school_classes.code` արժեքներ), sort order `0..9999`, `is_featured` (գլխավոր էջի դասավանդողների բլոկ), optional portrait object key, և `translations JSONB` (name, experience, biography)։ Public roster-ը և about էջը ցույց են տալիս միայն `PUBLISHED` տողերը։ Գլխավոր էջը ցույց է տալիս միայն `PUBLISHED` և `is_featured` տողերը։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։ Սկզբնական հինգ դասավանդողը seed migration-ով է մտել, ապա նշվել է գլխավոր էջի համար։
+
+### 7.5 `school_classes`
+
+Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), stable `code` (lowercase slug, unique among non-deleted rows), direction (`ballet`, `contemporary`, `traditional`, `open`), age (`children`, `teens`, `adults`, `youth`, `all`), level (`beginner`, `intermediate`, `advanced`, `all`), sort order `0..9999`, և `translations JSONB` (title, summary)։ Public catalog-ը ցույց է տալիս միայն `PUBLISHED` տողերը։ Կոդը ստեղծումից հետո չի փոխվում, որովհետև դասավանդողների `class_ids`-ը դրանով է կապվում։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։ Սկզբնական ութ դասընթացը seed migration-ով է մտել։
+
+### 7.6 `school_gallery_items`
+
+Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), category (`classes`, `performances`, `competitions`, `backstage`, `workshops`), kind (`photo`, `video`), sort order `0..9999`, optional still `image_key`, optional `video_url`, և `translations JSONB` (title, alt)։ Public gallery-ն ցույց է տալիս միայն `PUBLISHED` տողերը, որոնք ունեն նկար, իսկ video-ն միայն եթե URL-ը YouTube/Vimeo է կամ `/gallery/*.mp4`։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։ Սկզբնական տասը նյութը seed migration-ով է մտել։
 
 ## 8. Cart և wishlist
 

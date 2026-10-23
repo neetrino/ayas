@@ -1,28 +1,18 @@
 import { AboutSchoolFooter } from "@/features/about/ui/AboutSchoolFooter";
 import { ClassesCatalog, type ClassFilterGroup } from "@/features/classes/ui/ClassesCatalog";
+import type { ClassCatalogProgram } from "@/features/classes/ui/class-catalog";
 import { SchoolPageHero } from "@/features/home/ui/SchoolPageHero";
 import { HomeCtaSection } from "@/features/home/ui/HomeCtaSection";
-import { homeAssets } from "@/features/home/ui/home-assets";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
 
 type ClassesViewProps = {
   locale: Locale;
   dictionary: Dictionary;
+  programs: readonly ClassCatalogProgram[];
 };
 
-const CLASS_IMAGES = [
-  homeAssets.classCard,
-  homeAssets.gallery[0],
-  homeAssets.gallery[1],
-  homeAssets.about,
-  homeAssets.gallery[3],
-  homeAssets.gallery[4],
-  homeAssets.coach,
-  homeAssets.cta,
-] as const;
-
-export function ClassesView({ locale, dictionary }: ClassesViewProps) {
+export function ClassesView({ locale, dictionary, programs }: ClassesViewProps) {
   const landing = dictionary.home.landing;
   const classes = dictionary.classes;
 
@@ -49,7 +39,7 @@ export function ClassesView({ locale, dictionary }: ClassesViewProps) {
         chooseHref={`/${locale}/contact`}
         empty={classes.empty}
         groups={filterGroups(classes)}
-        programs={catalogPrograms(classes)}
+        programs={programs}
       />
       <HomeCtaSection
         title={landing.cta.title}
@@ -97,21 +87,3 @@ function options(
   ];
 }
 
-function catalogPrograms(classes: Dictionary["classes"]) {
-  return classes.programs.map((program, index) => ({
-    id: program.id,
-    title: program.title,
-    summary: program.summary,
-    directionId: program.direction,
-    ageId: program.age,
-    levelId: program.level,
-    direction: labelFor(classes.directions, program.direction),
-    age: labelFor(classes.ages, program.age),
-    level: labelFor(classes.levels, program.level),
-    imageSrc: CLASS_IMAGES[index % CLASS_IMAGES.length] ?? homeAssets.classCard,
-  }));
-}
-
-function labelFor(labels: Record<string, string>, key: string): string {
-  return labels[key] ?? key;
-}

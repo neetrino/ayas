@@ -326,10 +326,11 @@
 
 ### School gallery
 
-- Public route՝ `/{locale}/gallery`։
-- Categories՝ classes, performances, competitions, backstage, workshops։
-- Media՝ photos և videos։ Video-ն same-origin `/gallery/*.mp4` է կամ YouTube/Vimeo page URL, որը դառնում է safe embed։
+- Admin route՝ `/{locale}/admin/gallery`։ Create և edit-ը բացվում են drawer-ով։
+- Fields՝ multilingual title/alt, category (`classes`, `performances`, `competitions`, `backstage`, `workshops`), kind (`photo`, `video`), sort order, status, still image, optional video URL։
+- Public route՝ `/{locale}/gallery` կարդում է միայն `PUBLISHED` նյութերը, որոնք ունեն նկար։ Video-ն same-origin `/gallery/*.mp4` է կամ YouTube/Vimeo page URL, որը դառնում է safe embed։
 - Նկարները բացվում են lightbox-ով (փակել, նախորդ/հաջորդ, Escape)։ Տեսանյութը բացվում է նույն դիտարկիչում։
+- Ջնջումը soft delete է և audit log ունի։
 
 ## 20. Settings
 

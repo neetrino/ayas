@@ -22,7 +22,7 @@
 | `/[locale]/products/[slug]` | Public | Product detail; locale slug lookup; 404 unpublished/missing |
 | `/[locale]/about` | Public | Locale content |
 | `/[locale]/events` | Public | School event list |
-| `/[locale]/gallery` | Public | School gallery: category and photo/video filters, image lightbox, YouTube/Vimeo or same-origin video |
+| `/[locale]/gallery` | Public | Published school gallery: category and photo/video filters, image lightbox, YouTube/Vimeo or same-origin video |
 | `/[locale]/events/[slug]` | Public | Event detail; 404 when the slug is missing |
 | `/[locale]/contact` | Public | Address, phone, email, hours, social links, map, and contact form |
 | `/[locale]/blog` | Public | Published posts, category filter |
@@ -83,6 +83,8 @@
 | `/[locale]/admin/delivery` | Delivery rules |
 | `/[locale]/admin/blog` | Blog CMS |
 | `/[locale]/admin/events` | School event list; create and edit open in a drawer |
+| `/[locale]/admin/teachers` | School teacher list; create and edit open in a drawer |
+| `/[locale]/admin/gallery` | School gallery list; create and edit open in a drawer |
 | `/[locale]/admin/settings` | Typed store settings |
 
 ## 6. Non-page HTTP endpoints

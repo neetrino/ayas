@@ -3,9 +3,9 @@
 import { useAdminCopy } from "@/features/admin/ui/admin-copy";
 import { ADMIN_INPUT, ADMIN_LABEL, ADMIN_TEXTAREA } from "@/features/admin/ui/admin-form-classes";
 import { SelectDropdown } from "@/components/ui/SelectDropdown";
+import type { ClassOption } from "@/features/classes/domain/class-rules";
 import type { TeacherLocaleDraft } from "@/features/teachers/domain/teacher-draft";
 import {
-  TEACHER_CLASS_IDS,
   TEACHER_ROLES,
   type TeacherRole,
   type TeacherStatus,
@@ -90,6 +90,7 @@ type TeacherProfileFieldsProps = {
   sortOrder: string;
   status: TeacherStatus;
   classIds: readonly string[];
+  classOptions: readonly ClassOption[];
   disabled: boolean;
   onRole: (value: TeacherRole) => void;
   onSortOrder: (value: string) => void;
@@ -102,6 +103,7 @@ export function TeacherProfileFields({
   sortOrder,
   status,
   classIds,
+  classOptions,
   disabled,
   onRole,
   onSortOrder,
@@ -154,15 +156,15 @@ export function TeacherProfileFields({
       </div>
       <fieldset className="space-y-2">
         <legend className={ADMIN_LABEL}>{copy.teachers.classesLabel}</legend>
-        {TEACHER_CLASS_IDS.map((id) => (
-          <label key={id} className="flex items-center gap-2 text-sm text-gray-800">
+        {classOptions.map((option) => (
+          <label key={option.code} className="flex items-center gap-2 text-sm text-gray-800">
             <input
               type="checkbox"
-              checked={classIds.includes(id)}
+              checked={classIds.includes(option.code)}
               disabled={disabled}
-              onChange={() => onToggleClass(id)}
+              onChange={() => onToggleClass(option.code)}
             />
-            {copy.teachers.classOptions[id]}
+            {option.title}
           </label>
         ))}
       </fieldset>

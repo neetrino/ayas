@@ -13,6 +13,7 @@ import {
   deleteSchoolTeacherAction,
   toggleSchoolTeacherFeaturedAction,
 } from "@/features/teachers/application/manage-teachers";
+import type { ClassOption } from "@/features/classes/domain/class-rules";
 import type { AdminTeacherListItem } from "@/features/teachers/application/queries";
 import { AdminTeacherList } from "@/features/teachers/ui/AdminTeacherList";
 import { TeacherDrawer } from "@/features/teachers/ui/TeacherDrawer";
@@ -20,9 +21,14 @@ import { TeacherDrawer } from "@/features/teachers/ui/TeacherDrawer";
 type AdminTeachersViewProps = {
   locale: string;
   teachers: AdminTeacherListItem[];
+  classOptions: readonly ClassOption[];
 };
 
-export function AdminTeachersView({ locale, teachers }: AdminTeachersViewProps) {
+export function AdminTeachersView({
+  locale,
+  teachers,
+  classOptions,
+}: AdminTeachersViewProps) {
   const copy = useAdminCopy();
   const roleLabels = copy.teachers.roles;
   const router = useRouter();
@@ -153,6 +159,7 @@ export function AdminTeachersView({ locale, teachers }: AdminTeachersViewProps) 
             setEditing(null);
           }}
           teacher={editing}
+          classOptions={classOptions}
         />
       ) : null}
 
