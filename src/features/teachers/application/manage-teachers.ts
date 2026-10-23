@@ -208,6 +208,69 @@ async function archiveTeacher(
   });
 }
 
+async function toggleTeacherFeatured(
+  teacherId: string,
+  actorId: string,
+): Promise<boolean> {
+  return withTransaction(async (tx) => {
+    const [row] = await tx
+      .select({
+        id: schoolTeachers.id,
+        isFeatured: schoolTeachers.isFeatured,
+      })
+      .from(schoolTeachers)
+      .where(and(eq(schoolTeachers.id, teacherId), isNull(schoolTeachers.deletedAt)))
+      .for("update")
+      .limit(1);
+    if (!row) {
+      throw new Error("NOT_FOUND");
+    }
+    const isFeatured = !row.isFeatured;
+    await tx
+      .update(schoolTeachers)
+      .set({ isFeatured, updatedAt: new Date() })
+      .where(eq(schoolTeachers.id, row.id));
+    await tx.insert(auditLogs).values(
+      auditRow({
+        actorUserId: actorId,
+        action: "school_teacher.feature",
+        targetId: row.id,
+        beforeDiff: { isFeatured: row.isFeatured },
+        afterDiff: { isFeatured },
+      }),
+    );
+    return isFeatured;
+  });
+}
+
+/** Toggles whether a published teacher appears in the home coaches block. */
+export async function toggleSchoolTeacherFeaturedAction(
+  locale: string,
+  raw: SchoolTeacherIdInput,
+): Promise<Result<{ isFeatured: boolean }>> {
+  if (!isLocale(locale)) {
+    return err("INVALID_LOCALE", "Invalid locale.");
+  }
+
+  const parsed = schoolTeacherIdSchema.safeParse(raw);
+  if (!parsed.success) {
+    return err("VALIDATION_ERROR", "Invalid teacher payload.");
+  }
+
+  const actor = await requireAdmin(locale);
+  try {
+    const isFeatured = await toggleTeacherFeatured(parsed.data.teacherId, actor.id);
+    revalidateSchoolTeachers(locale);
+    return ok({ isFeatured });
+  } catch (error) {
+    if (error instanceof Error && error.message === "NOT_FOUND") {
+      return err("NOT_FOUND", "Teacher not found.");
+    }
+    logFailure("school_teacher.feature_failed", error);
+    return err("TEACHER_FEATURE_FAILED", "Unable to update the home page flag.");
+  }
+}
+
 /** Soft-deletes a teacher so the public site stops showing them. */
 export async function deleteSchoolTeacherAction(
   locale: string,

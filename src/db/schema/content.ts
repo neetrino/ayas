@@ -22,6 +22,9 @@ import {
   blogCategoryEnum,
   blogPostStatusEnum,
   schoolEventStatusEnum,
+  schoolGalleryCategoryEnum,
+  schoolGalleryKindEnum,
+  schoolGalleryStatusEnum,
   schoolTeacherRoleEnum,
   schoolTeacherStatusEnum,
 } from "@/db/schema/enums";
@@ -71,6 +74,15 @@ export type SchoolTeacherTranslation = {
 
 export type SchoolTeacherTranslationsJson = Partial<
   Record<"hy" | "en" | "ru", SchoolTeacherTranslation>
+>;
+
+export type SchoolGalleryTranslation = {
+  title: string;
+  alt: string;
+};
+
+export type SchoolGalleryTranslationsJson = Partial<
+  Record<"hy" | "en" | "ru", SchoolGalleryTranslation>
 >;
 
 export const heroSlides = pgTable(
@@ -190,6 +202,7 @@ export const schoolTeachers = pgTable(
     role: schoolTeacherRoleEnum("role").notNull(),
     classIds: jsonb("class_ids").$type<string[]>().notNull().default([]),
     sortOrder: integer("sort_order").notNull().default(0),
+    isFeatured: boolean("is_featured").notNull().default(false),
     portraitKey: text("portrait_key"),
     translations: jsonb("translations")
       .$type<SchoolTeacherTranslationsJson>()
@@ -202,6 +215,35 @@ export const schoolTeachers = pgTable(
     index("school_teachers_status_sort_idx").on(table.status, table.sortOrder),
     check(
       "school_teachers_sort_chk",
+      sql`${table.sortOrder} >= 0 AND ${table.sortOrder} <= 9999`,
+    ),
+  ],
+);
+
+export const schoolGalleryItems = pgTable(
+  "school_gallery_items",
+  {
+    id: idColumn(),
+    status: schoolGalleryStatusEnum("status").notNull().default("DRAFT"),
+    category: schoolGalleryCategoryEnum("category").notNull(),
+    kind: schoolGalleryKindEnum("kind").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    imageKey: text("image_key"),
+    videoUrl: text("video_url"),
+    translations: jsonb("translations")
+      .$type<SchoolGalleryTranslationsJson>()
+      .notNull(),
+    createdAt: createdAtColumn(),
+    updatedAt: updatedAtColumn(),
+    deletedAt: deletedAtColumn(),
+  },
+  (table) => [
+    index("school_gallery_items_status_sort_idx").on(
+      table.status,
+      table.sortOrder,
+    ),
+    check(
+      "school_gallery_items_sort_chk",
       sql`${table.sortOrder} >= 0 AND ${table.sortOrder} <= 9999`,
     ),
   ],

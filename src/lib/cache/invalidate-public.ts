@@ -69,6 +69,11 @@ export function invalidateTeachersCache(): void {
   updateTag(CACHE_TAGS.teachers);
 }
 
+/** Invalidates the public school gallery. */
+export function invalidateGalleryCache(): void {
+  updateTag(CACHE_TAGS.gallery);
+}
+
 /** Invalidates blog list caches and optional per-post / per-slug detail caches. */
 export function invalidateBlogCache(input?: {
   postId?: string;

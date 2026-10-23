@@ -16,6 +16,7 @@ export const CANONICAL_TABLES = [
   "blog_posts",
   "school_events",
   "school_teachers",
+  "school_gallery_items",
   "carts",
   "cart_items",
   "wishlist_items",

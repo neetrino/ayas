@@ -50,6 +50,13 @@
       "when": 1792769100000,
       "tag": "0006_seed_school_teachers",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792770000000,
+      "tag": "0007_school_teachers_featured",
+      "breakpoints": true
     }
   ]
 }

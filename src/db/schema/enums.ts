@@ -77,6 +77,25 @@ export const schoolTeacherRoleEnum = pgEnum("school_teacher_role", [
   "team",
 ]);
 
+export const schoolGalleryStatusEnum = pgEnum("school_gallery_status", [
+  "DRAFT",
+  "PUBLISHED",
+  "ARCHIVED",
+]);
+
+export const schoolGalleryCategoryEnum = pgEnum("school_gallery_category", [
+  "classes",
+  "performances",
+  "competitions",
+  "backstage",
+  "workshops",
+]);
+
+export const schoolGalleryKindEnum = pgEnum("school_gallery_kind", [
+  "photo",
+  "video",
+]);
+
 export const cartStatusEnum = pgEnum("cart_status", [
   "ACTIVE",
   "MERGED",

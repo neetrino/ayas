@@ -1,10 +1,9 @@
 import { AboutSchoolFooter } from "@/features/about/ui/AboutSchoolFooter";
-import { galleryMedia } from "@/features/gallery/content/gallery-media";
+import type { GalleryCard } from "@/features/gallery/domain/gallery-catalog";
 import {
   GALLERY_CATEGORIES,
   GALLERY_KINDS,
 } from "@/features/gallery/domain/gallery-item";
-import { toGalleryCards } from "@/features/gallery/domain/gallery-catalog";
 import {
   GalleryCatalog,
   type GalleryFilterGroup,
@@ -17,12 +16,12 @@ import type { Dictionary } from "@/lib/i18n/get-dictionary";
 type GalleryViewProps = {
   locale: Locale;
   dictionary: Dictionary;
+  items: readonly GalleryCard[];
 };
 
-export function GalleryView({ locale, dictionary }: GalleryViewProps) {
+export function GalleryView({ locale, dictionary, items }: GalleryViewProps) {
   const landing = dictionary.home.landing;
   const gallery = dictionary.gallery;
-  const cards = toGalleryCards(gallery.items, galleryMedia);
 
   return (
     <div className="home-landing">
@@ -46,7 +45,7 @@ export function GalleryView({ locale, dictionary }: GalleryViewProps) {
         previousLabel={gallery.lightbox.previous}
         nextLabel={gallery.lightbox.next}
         groups={filterGroups(gallery)}
-        items={cards.map((card) => ({
+        items={items.map((card) => ({
           ...card,
           category: gallery.categories[card.categoryId],
         }))}

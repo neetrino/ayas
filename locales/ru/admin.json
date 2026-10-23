@@ -13,6 +13,7 @@
     "blog": "Блог",
     "events": "События",
     "teachers": "Преподаватели",
+    "gallery": "Галерея",
     "messages": "Сообщения",
     "settings": "Настройки"
   },
@@ -129,6 +130,7 @@
     "noFurtherStatus": "Дальнейших смен статуса нет.",
     "entities": {
       "teacher": "преподавателя",
+      "galleryItem": "элемент галереи",
       "event": "событие",
       "post": "запись",
       "product": "товар",
@@ -455,6 +457,8 @@
     "empty": "Преподавателей пока нет.",
     "noMatch": "Нет преподавателей по этому поиску.",
     "classes": "Занятий: {count}",
+    "showOnHome": "Показать {name} на главной",
+    "hideFromHome": "Убрать {name} с главной",
     "experience": "Опыт",
     "biography": "Биография",
     "specialization": "Специализация",
@@ -477,6 +481,34 @@
       "traditional-adults": "Народный — взрослые",
       "open-class": "Открытый класс",
       "stage": "Сцена"
+    }
+  },
+  "gallery": {
+    "title": "Галерея",
+    "add": "Добавить материал",
+    "edit": "Редактировать материал",
+    "searchPlaceholder": "Поиск по названию или категории",
+    "searchLabel": "Поиск в галерее",
+    "empty": "Материалов пока нет.",
+    "noMatch": "Ничего не найдено.",
+    "alt": "Альтернативный текст",
+    "category": "Категория",
+    "kind": "Медиа",
+    "videoUrl": "Ссылка на видео",
+    "videoHelp": "YouTube, Vimeo или /gallery/name.mp4",
+    "image": "Изображение",
+    "noImage": "Изображения пока нет.",
+    "sortWhole": "Порядок должен быть целым числом.",
+    "categories": {
+      "classes": "Занятия",
+      "performances": "Выступления",
+      "competitions": "Конкурсы",
+      "backstage": "За кулисами",
+      "workshops": "Мастер-классы"
+    },
+    "kinds": {
+      "photo": "Фото",
+      "video": "Видео"
     }
   },
   "messages": {

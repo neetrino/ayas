@@ -188,7 +188,7 @@ Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), calendar date, start time, duration m
 
 ### 7.4 `school_teachers`
 
-Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), specialization (`ballet`, `contemporary`, `traditional`, `team`), `class_ids JSONB`, sort order `0..9999`, optional portrait object key, և `translations JSONB` (name, experience, biography)։ Public roster-ը, գլխավոր էջը և about էջը ցույց են տալիս միայն `PUBLISHED` տողերը։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։ Սկզբնական հինգ դասավանդողը seed migration-ով է մտել։
+Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), specialization (`ballet`, `contemporary`, `traditional`, `team`), `class_ids JSONB`, sort order `0..9999`, `is_featured` (գլխավոր էջի դասավանդողների բլոկ), optional portrait object key, և `translations JSONB` (name, experience, biography)։ Public roster-ը և about էջը ցույց են տալիս միայն `PUBLISHED` տողերը։ Գլխավոր էջը ցույց է տալիս միայն `PUBLISHED` և `is_featured` տողերը։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։ Սկզբնական հինգ դասավանդողը seed migration-ով է մտել, ապա նշվել է գլխավոր էջի համար։
 
 ## 8. Cart և wishlist
 

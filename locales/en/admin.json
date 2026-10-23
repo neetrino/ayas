@@ -13,6 +13,7 @@
     "blog": "Blog",
     "events": "Events",
     "teachers": "Teachers",
+    "gallery": "Gallery",
     "messages": "Messages",
     "settings": "Settings"
   },
@@ -129,6 +130,7 @@
     "noFurtherStatus": "No further status changes.",
     "entities": {
       "teacher": "teacher",
+      "galleryItem": "gallery item",
       "event": "event",
       "post": "post",
       "product": "product",
@@ -455,6 +457,8 @@
     "empty": "No teachers yet.",
     "noMatch": "No teachers match this search.",
     "classes": "Classes: {count}",
+    "showOnHome": "Show {name} on the home page",
+    "hideFromHome": "Remove {name} from the home page",
     "experience": "Experience",
     "biography": "Biography",
     "specialization": "Specialization",
@@ -477,6 +481,34 @@
       "traditional-adults": "Traditional — adults",
       "open-class": "Open class",
       "stage": "Stage"
+    }
+  },
+  "gallery": {
+    "title": "Gallery",
+    "add": "Add gallery item",
+    "edit": "Edit gallery item",
+    "searchPlaceholder": "Search by title or category",
+    "searchLabel": "Search gallery",
+    "empty": "No gallery items yet.",
+    "noMatch": "No gallery items match this search.",
+    "alt": "Alt text",
+    "category": "Category",
+    "kind": "Media",
+    "videoUrl": "Video link",
+    "videoHelp": "YouTube, Vimeo, or /gallery/name.mp4",
+    "image": "Image",
+    "noImage": "No image yet.",
+    "sortWhole": "Sort order must be a whole number.",
+    "categories": {
+      "classes": "Classes",
+      "performances": "Performances",
+      "competitions": "Competitions",
+      "backstage": "Backstage",
+      "workshops": "Workshops"
+    },
+    "kinds": {
+      "photo": "Photo",
+      "video": "Video"
     }
   },
   "messages": {

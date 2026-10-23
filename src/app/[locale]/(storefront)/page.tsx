@@ -19,7 +19,7 @@ import { HomeSiteFooter } from "@/features/home/ui/HomeSiteFooter";
 import { homeAssets } from "@/features/home/ui/home-assets";
 import { landingFooterLinks } from "@/features/home/ui/landing-nav";
 import { getFeaturedProducts } from "@/features/products/queries";
-import { listPublishedTeachers } from "@/features/teachers/application/queries";
+import { listHomeTeachers } from "@/features/teachers/application/queries";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import {
@@ -43,11 +43,11 @@ export default async function HomePage({ params }: HomePageProps) {
   const locale: Locale = rawLocale;
   const dictionary = getDictionary(locale);
   const copy = dictionary.home.landing;
-  const [featuredProducts, currency, publishedEvents, publishedTeachers] = await Promise.all([
+  const [featuredProducts, currency, publishedEvents, homeTeachers] = await Promise.all([
     getFeaturedProducts(locale),
     getSelectedCurrency(),
     listPublishedEvents(locale),
-    listPublishedTeachers(locale),
+    listHomeTeachers(locale),
   ]);
   const formatPrice = await createDisplayPriceFormatter(locale, currency);
   const products = mapShopCards(locale, featuredProducts, formatPrice, copy.shop);
@@ -79,7 +79,7 @@ export default async function HomePage({ params }: HomePageProps) {
         moreHref={`/${locale}/teachers`}
         previousLabel={copy.previous}
         nextLabel={copy.next}
-        coaches={toHomeCoachCards(publishedTeachers)}
+        coaches={toHomeCoachCards(homeTeachers)}
       />
       <HomeShopSection
         title={copy.shop.title}

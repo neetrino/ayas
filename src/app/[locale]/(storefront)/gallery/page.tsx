@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { listPublishedGallery } from "@/features/gallery/application/queries";
 import { GalleryView } from "@/features/gallery/ui/GalleryView";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -35,5 +36,8 @@ export default async function GalleryPage({ params }: GalleryPageProps) {
 
   const locale: Locale = rawLocale;
 
-  return <GalleryView locale={locale} dictionary={getDictionary(locale)} />;
+  const items = await listPublishedGallery(locale);
+  return (
+    <GalleryView locale={locale} dictionary={getDictionary(locale)} items={items} />
+  );
 }

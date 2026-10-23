@@ -16,6 +16,7 @@ export {
   blogPosts,
   heroSlides,
   schoolEvents,
+  schoolGalleryItems,
   schoolTeachers,
   type BlogTranslation,
   type BlogTranslationsJson,
@@ -23,6 +24,8 @@ export {
   type HeroTranslationsJson,
   type SchoolEventTranslation,
   type SchoolEventTranslationsJson,
+  type SchoolGalleryTranslation,
+  type SchoolGalleryTranslationsJson,
   type SchoolTeacherTranslation,
   type SchoolTeacherTranslationsJson,
 } from "@/db/schema/content";

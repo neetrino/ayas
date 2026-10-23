@@ -34,6 +34,7 @@ export type AdminTeacherListItem = {
   role: TeacherRole;
   classIds: string[];
   sortOrder: number;
+  isFeatured: boolean;
   name: string;
   portraitKey: string | null;
   portraitUrl: string | null;
@@ -71,6 +72,7 @@ function toAdminItem(row: SchoolTeacherRow, locale: Locale): AdminTeacherListIte
     role: row.role,
     classIds: row.classIds,
     sortOrder: row.sortOrder,
+    isFeatured: row.isFeatured,
     name: copy?.name ?? "Untitled",
     portraitKey: row.portraitKey,
     portraitUrl: resolveTeacherPortraitUrl(row.portraitKey),
@@ -91,12 +93,19 @@ export async function listAdminTeachers(
   return rows.map((row) => toAdminItem(row, locale));
 }
 
-async function loadPublishedTeachers(locale: Locale): Promise<PublicTeacher[]> {
+async function loadPublishedTeachers(
+  locale: Locale,
+  featuredOnly: boolean,
+): Promise<PublicTeacher[]> {
   const rows = await getDb()
     .select()
     .from(schoolTeachers)
     .where(
-      and(eq(schoolTeachers.status, "PUBLISHED"), isNull(schoolTeachers.deletedAt)),
+      and(
+        eq(schoolTeachers.status, "PUBLISHED"),
+        isNull(schoolTeachers.deletedAt),
+        featuredOnly ? eq(schoolTeachers.isFeatured, true) : undefined,
+      ),
     )
     .orderBy(asc(schoolTeachers.sortOrder), asc(schoolTeachers.createdAt));
 
@@ -111,8 +120,20 @@ export async function listPublishedTeachers(
   locale: Locale,
 ): Promise<PublicTeacher[]> {
   return unstable_cache(
-    async () => loadPublishedTeachers(locale),
+    async () => loadPublishedTeachers(locale, false),
     ["published-school-teachers", locale],
+    {
+      tags: [CACHE_TAGS.teachers],
+      revalidate: PUBLIC_CACHE_REVALIDATE_SECONDS,
+    },
+  )();
+}
+
+/** Published teachers marked for the home-page coaches block. */
+export async function listHomeTeachers(locale: Locale): Promise<PublicTeacher[]> {
+  return unstable_cache(
+    async () => loadPublishedTeachers(locale, true),
+    ["home-school-teachers", locale],
     {
       tags: [CACHE_TAGS.teachers],
       revalidate: PUBLIC_CACHE_REVALIDATE_SECONDS,
