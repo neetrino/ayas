@@ -17,6 +17,7 @@ export const upsertSchoolEventSchema = z.object({
   startTime: z.string().trim(),
   durationMinutes: z.coerce.number().int(),
   priceAmount: z.coerce.number().int(),
+  slug: z.string().trim().min(1).max(160),
   ageRestriction: z
     .string()
     .trim()

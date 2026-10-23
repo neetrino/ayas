@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition, type Dispatch, type SetStateAction } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/Button";
@@ -13,21 +13,25 @@ import {
 import {
   collectEventTranslations,
   draftsFromTranslations,
+  sharedEventSlug,
+  suggestedEventSlug,
   type EventLocaleDraft,
 } from "@/features/events/domain/event-draft";
+import type { SchoolEventStatus } from "@/features/events/domain/event-rules";
 import {
-  EVENT_GALLERY_LIMIT,
-  type SchoolEventStatus,
-} from "@/features/events/domain/event-rules";
-import { CopyFields, LocaleTabs, ScheduleFields } from "@/features/events/ui/EventDrawerFields";
+  CopyFields,
+  LocaleTabs,
+  ScheduleFields,
+  SlugField,
+} from "@/features/events/ui/EventDrawerFields";
 import { EventDrawerMedia } from "@/features/events/ui/EventDrawerMedia";
+import {
+  addGallery,
+  buildMediaForm,
+  removeGallery,
+  type PendingImage,
+} from "@/features/events/ui/event-drawer-media";
 import { locales, type Locale } from "@/lib/i18n/config";
-
-type PendingImage = {
-  key: string;
-  file: File;
-  url: string;
-};
 
 type EventDrawerProps = {
   locale: string;
@@ -60,6 +64,10 @@ export function EventDrawer({
   const isEdit = event != null;
   const [activeLocale, setActiveLocale] = useState<Locale>(() => firstLocale(event));
   const [drafts, setDrafts] = useState(() => draftsFromTranslations(event?.translations));
+  const [slug, setSlug] = useState(() => sharedEventSlug(event?.translations));
+  const [slugTouched, setSlugTouched] = useState(
+    () => sharedEventSlug(event?.translations).length > 0,
+  );
   const [status, setStatus] = useState<SchoolEventStatus>(() => event?.status ?? "DRAFT");
   const [date, setDate] = useState(() => event?.date ?? "");
   const [startTime, setStartTime] = useState(() => event?.startTime ?? "");
@@ -80,6 +88,7 @@ export function EventDrawer({
   const [pendingGallery, setPendingGallery] = useState<PendingImage[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const slugValue = slugTouched ? slug : suggestedEventSlug(drafts);
   const galleryPreview = useMemo(
     () => [
       ...gallery.map((item) => ({ key: item.key, url: item.url })),
@@ -96,7 +105,7 @@ export function EventDrawer({
   }
 
   function submit(): void {
-    const collected = collectEventTranslations(drafts);
+    const collected = collectEventTranslations(drafts, slugValue);
     if (!collected.ok) {
       setError(collected.message);
       return;
@@ -127,6 +136,7 @@ export function EventDrawer({
         startTime,
         durationMinutes,
         priceAmount,
+        slug: slugValue,
         ageRestriction: age,
         translations: collected.translations,
       };
@@ -165,6 +175,14 @@ export function EventDrawer({
         <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
           <LocaleTabs active={activeLocale} onChange={setActiveLocale} />
           <CopyFields draft={drafts[activeLocale]} disabled={isPending} onChange={updateDraft} />
+          <SlugField
+            value={slugValue}
+            disabled={isPending}
+            onChange={(value) => {
+              setSlugTouched(true);
+              setSlug(value);
+            }}
+          />
           <ScheduleFields
             date={date}
             startTime={startTime}
@@ -228,63 +246,4 @@ export function EventDrawer({
       </form>
     </SideSheet>
   );
-}
-
-function buildMediaForm(input: {
-  posterFile: File | null;
-  posterRemoved: boolean;
-  seatingFile: File | null;
-  seatingRemoved: boolean;
-  pendingGallery: readonly PendingImage[];
-  removedGallery: readonly { key: string }[];
-}): FormData {
-  const mediaForm = new FormData();
-  if (input.posterFile) {
-    mediaForm.set("poster", input.posterFile);
-  }
-  if (input.posterRemoved) {
-    mediaForm.set("removePoster", "1");
-  }
-  if (input.seatingFile) {
-    mediaForm.set("seating", input.seatingFile);
-  }
-  if (input.seatingRemoved) {
-    mediaForm.set("removeSeating", "1");
-  }
-  for (const item of input.pendingGallery) {
-    mediaForm.append("gallery", item.file);
-  }
-  for (const item of input.removedGallery) {
-    mediaForm.append("removeGallery", item.key);
-  }
-  return mediaForm;
-}
-
-function addGallery(
-  files: File[],
-  currentCount: number,
-  setPendingGallery: Dispatch<SetStateAction<PendingImage[]>>,
-): void {
-  const room = EVENT_GALLERY_LIMIT - currentCount;
-  const next = files.slice(0, Math.max(room, 0)).map((file) => ({
-    key: `${file.name}-${file.size}-${crypto.randomUUID()}`,
-    file,
-    url: URL.createObjectURL(file),
-  }));
-  setPendingGallery((current) => [...current, ...next]);
-}
-
-function removeGallery(
-  key: string,
-  setGallery: Dispatch<SetStateAction<AdminEventListItem["gallery"]>>,
-  setPendingGallery: Dispatch<SetStateAction<PendingImage[]>>,
-): void {
-  setPendingGallery((current) => {
-    const removed = current.find((item) => item.key === key);
-    if (removed) {
-      URL.revokeObjectURL(removed.url);
-    }
-    return current.filter((item) => item.key !== key);
-  });
-  setGallery((current) => current.filter((item) => item.key !== key));
 }

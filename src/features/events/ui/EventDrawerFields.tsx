@@ -54,18 +54,6 @@ export function CopyFields({
         />
       </label>
       <label className="block">
-        <span className={ADMIN_LABEL}>Slug</span>
-        <input
-          value={draft.slug}
-          disabled={disabled}
-          onChange={(event) =>
-            onChange({ slug: event.target.value, slugTouched: true })
-          }
-          className={ADMIN_INPUT}
-          placeholder="Filled from the name when left empty"
-        />
-      </label>
-      <label className="block">
         <span className={ADMIN_LABEL}>Description</span>
         <textarea
           rows={5}
@@ -112,6 +100,29 @@ type ScheduleFieldsProps = {
   onAge: (value: string) => void;
   onStatus: (value: SchoolEventStatus) => void;
 };
+
+export function SlugField({
+  value,
+  disabled,
+  onChange,
+}: {
+  value: string;
+  disabled: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className={ADMIN_LABEL}>Slug</span>
+      <input
+        value={value}
+        disabled={disabled}
+        onChange={(event) => onChange(event.target.value)}
+        className={ADMIN_INPUT}
+        placeholder="Same address for every language"
+      />
+    </label>
+  );
+}
 
 export function ScheduleFields({
   date,

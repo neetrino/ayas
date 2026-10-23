@@ -57,9 +57,33 @@ describe("event rules", () => {
       ru: { ...emptyEventDraft(), name: "Гала" },
     };
 
-    expect(collectEventTranslations(drafts)).toEqual({
+    expect(collectEventTranslations(drafts, "spring-gala")).toEqual({
       ok: false,
       message: "Complete name, description, venue, and address for RU.",
     });
+  });
+
+  it("stores the same slug for every language", () => {
+    const filled = {
+      description: "Evening performance.",
+      venue: "AYAS stage",
+      address: "15 Abovyan Street, Yerevan",
+    };
+    const result = collectEventTranslations(
+      {
+        hy: { ...emptyEventDraft(), ...filled, name: "Գալա" },
+        en: { ...emptyEventDraft(), ...filled, name: "Spring gala" },
+        ru: emptyEventDraft(),
+      },
+      "Spring Gala!",
+    );
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+    expect(result.translations.hy?.slug).toBe("spring-gala");
+    expect(result.translations.en?.slug).toBe("spring-gala");
+    expect(result.translations.ru).toBeUndefined();
   });
 });

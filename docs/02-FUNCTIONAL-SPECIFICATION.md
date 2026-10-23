@@ -313,7 +313,7 @@
 ### School events
 
 - Admin route՝ `/{locale}/admin/events`։ Create և edit-ը բացվում են drawer-ով։
-- Fields՝ multilingual name/slug/description/venue/address, date, start time, duration, AMD price, optional age restriction, status, poster, seating plan, gallery։
+- Fields՝ multilingual name/description/venue/address, one shared slug, date, start time, duration, AMD price, optional age restriction, status, poster, seating plan, gallery։
 - Public routes՝ `/{locale}/events` և `/{locale}/events/{slug}` կարդում են միայն `PUBLISHED` event-ները։
 - Ջնջումը soft delete է և audit log ունի։
 

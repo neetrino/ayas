@@ -52,7 +52,9 @@ export function revalidateSchoolEvents(
 
 function normalizeTranslations(
   input: UpsertSchoolEventInput["translations"],
+  slug: string,
 ): EventTranslations {
+  const sharedSlug = normalizeEventSlug(slug);
   const next: EventTranslations = {};
   for (const locale of locales) {
     const copy = input[locale];
@@ -61,7 +63,7 @@ function normalizeTranslations(
     }
     next[locale] = {
       name: copy.name.trim(),
-      slug: normalizeEventSlug(copy.slug),
+      slug: sharedSlug,
       description: copy.description.trim(),
       venue: copy.venue.trim(),
       address: copy.address.trim(),
@@ -80,7 +82,7 @@ export function validatedEvent(raw: unknown): Result<SavedEvent> {
     ...parsed.data,
     startTime: parsed.data.startTime.slice(0, 5),
   };
-  const translations = normalizeTranslations(data.translations);
+  const translations = normalizeTranslations(data.translations, data.slug);
   const scheduleError = validateEventSchedule({
     date: data.date,
     startTime: data.startTime,

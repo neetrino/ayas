@@ -8,21 +8,17 @@ import {
 
 export type EventLocaleDraft = {
   name: string;
-  slug: string;
   description: string;
   venue: string;
   address: string;
-  slugTouched: boolean;
 };
 
 export function emptyEventDraft(): EventLocaleDraft {
   return {
     name: "",
-    slug: "",
     description: "",
     venue: "",
     address: "",
-    slugTouched: false,
   };
 }
 
@@ -42,36 +38,25 @@ export function draftsFromTranslations(
     }
     next[locale] = {
       name: copy.name,
-      slug: copy.slug,
       description: copy.description,
       venue: copy.venue,
       address: copy.address,
-      slugTouched: true,
     };
   }
 
   return next;
 }
 
-function resolvedSlug(draft: EventLocaleDraft): string {
-  if (draft.slugTouched && draft.slug.trim()) {
-    return normalizeEventSlug(draft.slug);
-  }
-  return normalizeEventSlug(draft.name);
-}
-
 function isBlank(draft: EventLocaleDraft): boolean {
   return (
     !draft.name.trim() &&
-    !draft.slug.trim() &&
     !draft.description.trim() &&
     !draft.venue.trim() &&
     !draft.address.trim()
   );
 }
 
-function toCopy(draft: EventLocaleDraft): EventLocaleCopy | null {
-  const slug = resolvedSlug(draft);
+function toCopy(draft: EventLocaleDraft, slug: string): EventLocaleCopy | null {
   const copy = {
     name: draft.name.trim(),
     slug,
@@ -79,16 +64,49 @@ function toCopy(draft: EventLocaleDraft): EventLocaleCopy | null {
     venue: draft.venue.trim(),
     address: draft.address.trim(),
   };
-  if (!copy.name || !copy.slug || !copy.description || !copy.venue || !copy.address) {
+  if (!copy.name || !copy.description || !copy.venue || !copy.address) {
     return null;
   }
   return copy;
 }
 
-/** Keeps filled locales and rejects a language that is only partly filled. */
+/** One slug for every filled language. */
+export function sharedEventSlug(
+  translations: EventTranslations | undefined,
+): string {
+  return (
+    translations?.en?.slug ??
+    translations?.hy?.slug ??
+    translations?.ru?.slug ??
+    ""
+  );
+}
+
+const SLUG_SOURCE_ORDER: readonly Locale[] = ["en", "hy", "ru"];
+
+/** Suggests a slug from the first name that contains Latin letters. */
+export function suggestedEventSlug(
+  drafts: Record<Locale, EventLocaleDraft>,
+): string {
+  for (const locale of SLUG_SOURCE_ORDER) {
+    const value = normalizeEventSlug(drafts[locale].name);
+    if (value) {
+      return value;
+    }
+  }
+  return "";
+}
+
+/** Keeps filled locales and writes the same slug into each one. */
 export function collectEventTranslations(
   drafts: Record<Locale, EventLocaleDraft>,
+  slug: string,
 ): { ok: true; translations: EventTranslations } | { ok: false; message: string } {
+  const normalizedSlug = normalizeEventSlug(slug);
+  if (!normalizedSlug) {
+    return { ok: false, message: "Slug is required." };
+  }
+
   const translations: EventTranslations = {};
 
   for (const locale of locales) {
@@ -96,7 +114,7 @@ export function collectEventTranslations(
     if (isBlank(draft)) {
       continue;
     }
-    const copy = toCopy(draft);
+    const copy = toCopy(draft, normalizedSlug);
     if (!copy) {
       return {
         ok: false,
