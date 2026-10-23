@@ -17,6 +17,7 @@ import { AdminSearchInput } from "@/features/admin/ui/AdminSearchInput";
 import { ADMIN_BADGE } from "@/features/admin/ui/status-badge";
 import { deleteBlogPostAction } from "@/features/blog/application/manage-blog";
 import type { AdminBlogListItem } from "@/features/blog/application/queries";
+import { BLOG_CATEGORY_ADMIN_LABELS } from "@/features/blog/domain/blog-article";
 import { BlogPostDrawer } from "@/features/blog/ui/BlogPostDrawer";
 
 type AdminBlogViewProps = {
@@ -101,7 +102,7 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
   return (
     <section>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className={ADMIN_PAGE_TITLE}>Blog</h1>
+        <h1 className={ADMIN_PAGE_TITLE}>Blog / News</h1>
         <Button
           type="button"
           size="sm"
@@ -164,7 +165,7 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
                       </p>
                     ) : null}
                     <p className="mt-1 text-xs text-gray-500">
-                      {post.path}
+                      {BLOG_CATEGORY_ADMIN_LABELS[post.category]}
                       {post.publishedAt ? ` · ${post.publishedAt}` : ""}
                     </p>
                   </div>
@@ -208,6 +209,9 @@ export function AdminBlogView({ locale, posts }: AdminBlogViewProps) {
           open
           onClose={closeDrawer}
           post={editingPost}
+          relatedOptions={posts
+            .filter((item) => item.id !== editingPost?.id)
+            .map((item) => ({ id: item.id, title: item.title }))}
         />
       ) : null}
 

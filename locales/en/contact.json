@@ -12,10 +12,17 @@
   "storePhone": "+374 XX XXX XXX",
   "storeEmail": "info@shop.am",
   "storeAddress": "Yerevan, Abovyan 10",
+  "addressLabel": "Address",
+  "phoneLabel": "Phone",
+  "hoursLabel": "Working Hours",
+  "socialLabel": "Social Media",
   "social": {
     "instagram": "https://instagram.com",
     "facebook": "https://facebook.com",
-    "linkedin": "https://linkedin.com"
+    "linkedin": "https://linkedin.com",
+    "twitter": "https://twitter.com",
+    "vimeo": "https://vimeo.com",
+    "youtube": "https://youtube.com"
   },
   "callTitle": "Call Us:",
   "callDescription": "We are available 24/7, 7 days a week.",
@@ -25,5 +32,5 @@
   "hqTitle": "Headquarters:",
   "hoursWeekdays": "Monday - Friday: 9:00-20:00",
   "hoursSaturday": "Saturday: 11:00 - 15:00",
-  "mapTitle": "Store location"
+  "mapTitle": "Map"
 }

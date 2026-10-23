@@ -15,10 +15,13 @@ export {
 export {
   blogPosts,
   heroSlides,
+  schoolEvents,
   type BlogTranslation,
   type BlogTranslationsJson,
   type HeroTranslation,
   type HeroTranslationsJson,
+  type SchoolEventTranslation,
+  type SchoolEventTranslationsJson,
 } from "@/db/schema/content";
 export {
   cartItems,

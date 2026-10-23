@@ -16,5 +16,87 @@
     "qualityDescription": "Խնամքով ընտրված ապրանքներ, որոնց կարելի է վստահել։",
     "returnTitle": "Անվճար վերադարձ",
     "returnDescription": "Հեշտ վերադարձ, եթե ինչ-որ բան ճիշտ չէ։"
+  },
+  "landing": {
+    "previous": "Նախորդ",
+    "next": "Հաջորդ",
+    "openMenu": "Բացել մենյուն",
+    "nav": {
+      "about": "Դպրոցի մասին",
+      "courses": "Դասընթացներ",
+      "teachers": "Դասավանդողներ",
+      "events": "Միջոցառումներ",
+      "blog": "Բլոգ",
+      "shop": "Խանութ",
+      "gallery": "Պատկերասրահ",
+      "contact": "Կապ հաստատել"
+    },
+    "hero": {
+      "dance": "Պարիր",
+      "feel": "Զգա",
+      "shine": "Փայլիր",
+      "lead": "AYAS-ը Հայաստանի առաջատար պարի դպրոցն է, որտեղ ավանդույթները հանդիպում են ժամանակակից արտահայտությանը",
+      "more": "Ավելին",
+      "register": "Գրանցվել",
+      "statValue": "200",
+      "statLabel": "Ուսանող"
+    },
+    "about": {
+      "title": "ԴՊՐՈՑԻ ՄԱՍԻՆ",
+      "first": "AYAS-ը հիմնադրվել է պարի արվեստի հանդեպ կիրքից։ Մենք կրթում ենք ոչ միայն շարժումներ, այլ ձևավորում ենք արտիստների, ովքեր արտահայտում են իրենց ներաշխարհը բեմի վրա։",
+      "second": "Մեր մոտեցումը հիմնված է ավանդական ու ժամանակակից տեխնիկաների հավասարակշռված համադրության վրա։",
+      "courses": "Դասընթացներ"
+    },
+    "classes": {
+      "name": "Դասական բալետ"
+    },
+    "coaches": {
+      "title": "Մեր դասավանդողները",
+      "name": "Անուն Ազգանուն",
+      "more": "Այլ մանրամասներ"
+    },
+    "shop": {
+      "title": "Խանութ",
+      "add": "Ավելացնել զամբյուղ",
+      "placeholderTitle": "Snickers Off-White",
+      "placeholderMeta": "2024",
+      "placeholderBrand": "NIKE",
+      "placeholderPrice": "$38.00"
+    },
+    "events": {
+      "title": "[Ելույթ 1]",
+      "date": "12/08/2026",
+      "more": "Ավելին"
+    },
+    "reviews": {
+      "title": "Կարծիքներ",
+      "quote": "I've been consistently impressed with the quality of service provided by this website. They have exceeded my expectations and delivered exceptional results. Highly recommended!",
+      "name": "Steve H.",
+      "role": "Marketing Manager",
+      "more": "Ավելին"
+    },
+    "news": {
+      "title": "Նորություններ",
+      "eyebrow": "Simone says...",
+      "quote": "Authenticity without performativity is a delicate balance, much like a dance that flows effortlessly. Structure without rigidity allows for creativity to flourish.",
+      "author": "Simone de Beauvoir",
+      "handle": "@simone.db_1949"
+    },
+    "cta": {
+      "title": "Սկսի’ր քո ճանապարհը",
+      "body": "Ամեն մեծ արտիստ սկսել է առաջին քայլից։ Ընտրի´ր դասընթաց, գրանցվի´ր առցանց, դարձի´ր AYAS ընտանիքի մի մասը։",
+      "register": "Գրանցվել"
+    },
+    "footer": {
+      "visit": "Գրեք կամ զանգահարեք ցանկացած պահի",
+      "phone": "+1 (555) 012-3456",
+      "email": "info@ayas.com",
+      "addressLine1": "123 Industrial Ave",
+      "addressLine2": "New York, NY 10001",
+      "map": "Քարտեզ",
+      "copyright": "Copyright © 2026 | Բոլոր իրավունքները պաշտպանված են | Ստեղծվել է",
+      "maker": "Neetrino",
+      "makerSuffix": "կողմից"
+    }
   }
 }

@@ -48,6 +48,22 @@ export const blogPostStatusEnum = pgEnum("blog_post_status", [
   "ARCHIVED",
 ]);
 
+export const blogCategoryEnum = pgEnum("blog_category", [
+  "NEWS",
+  "COMPETITION",
+  "PERFORMANCE",
+  "EVENT",
+  "WORKSHOP",
+  "INTERVIEW",
+  "TIP",
+]);
+
+export const schoolEventStatusEnum = pgEnum("school_event_status", [
+  "DRAFT",
+  "PUBLISHED",
+  "ARCHIVED",
+]);
+
 export const cartStatusEnum = pgEnum("cart_status", [
   "ACTIVE",
   "MERGED",

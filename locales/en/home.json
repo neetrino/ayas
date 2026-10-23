@@ -16,5 +16,87 @@
     "qualityDescription": "Carefully selected products you can trust.",
     "returnTitle": "Free Return",
     "returnDescription": "Easy returns when something is not right."
+  },
+  "landing": {
+    "previous": "Previous",
+    "next": "Next",
+    "openMenu": "Open menu",
+    "nav": {
+      "about": "About the school",
+      "courses": "Courses",
+      "teachers": "Teachers",
+      "events": "Events",
+      "blog": "Blog",
+      "shop": "Shop",
+      "gallery": "Gallery",
+      "contact": "Contact us"
+    },
+    "hero": {
+      "dance": "Dance",
+      "feel": "Feel",
+      "shine": "Shine",
+      "lead": "AYAS is Armenia’s leading dance school, where tradition meets contemporary expression.",
+      "more": "More",
+      "register": "Register",
+      "statValue": "200",
+      "statLabel": "Students"
+    },
+    "about": {
+      "title": "ABOUT THE SCHOOL",
+      "first": "AYAS was founded from a passion for the art of dance. We teach more than movement: we shape artists who express their inner world on stage.",
+      "second": "Our approach balances traditional and contemporary technique.",
+      "courses": "Courses"
+    },
+    "classes": {
+      "name": "Classical ballet"
+    },
+    "coaches": {
+      "title": "Our teachers",
+      "name": "Name Surname",
+      "more": "More details"
+    },
+    "shop": {
+      "title": "Shop",
+      "add": "Add to cart",
+      "placeholderTitle": "Snickers Off-White",
+      "placeholderMeta": "2024",
+      "placeholderBrand": "NIKE",
+      "placeholderPrice": "$38.00"
+    },
+    "events": {
+      "title": "[Performance 1]",
+      "date": "12/08/2026",
+      "more": "More"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "quote": "I've been consistently impressed with the quality of service provided by this website. They have exceeded my expectations and delivered exceptional results. Highly recommended!",
+      "name": "Steve H.",
+      "role": "Marketing Manager",
+      "more": "More"
+    },
+    "news": {
+      "title": "News",
+      "eyebrow": "Simone says...",
+      "quote": "Authenticity without performativity is a delicate balance, much like a dance that flows effortlessly. Structure without rigidity allows for creativity to flourish.",
+      "author": "Simone de Beauvoir",
+      "handle": "@simone.db_1949"
+    },
+    "cta": {
+      "title": "Start your path",
+      "body": "Every great artist began with a first step. Choose a course, register online, and become part of the AYAS family.",
+      "register": "Register"
+    },
+    "footer": {
+      "visit": "Visit or contact us any time",
+      "phone": "+1 (555) 012-3456",
+      "email": "info@ayas.com",
+      "addressLine1": "123 Industrial Ave",
+      "addressLine2": "New York, NY 10001",
+      "map": "Map",
+      "copyright": "Copyright © 2026 | All rights reserved | Created by",
+      "maker": "Neetrino",
+      "makerSuffix": ""
+    }
   }
 }

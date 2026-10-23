@@ -1,8 +1,9 @@
 "use server";
 
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
+import { getDb } from "@/db/client";
 import {
   auditLogs,
   blogPosts,
@@ -12,7 +13,12 @@ import { withTransaction } from "@/db/transaction";
 import {
   persistBlogCoverImage,
   removeBlogCoverImage,
+  syncBlogGalleryImages,
 } from "@/features/blog/application/persist-blog-media";
+import {
+  blogVideoEmbedUrl,
+  normalizeRelatedPostIds,
+} from "@/features/blog/domain/blog-article";
 import {
   blogRuleErrorMessage,
   normalizeBlogSlug,
@@ -61,6 +67,78 @@ async function applyBlogCoverMedia(
   }
 
   return null;
+}
+
+function galleryFiles(mediaForm: FormData | undefined): File[] {
+  if (!mediaForm) {
+    return [];
+  }
+  return mediaForm
+    .getAll("gallery")
+    .filter((value): value is File => value instanceof File && value.size > 0);
+}
+
+function galleryRemoveIds(mediaForm: FormData | undefined): string[] {
+  if (!mediaForm) {
+    return [];
+  }
+  return mediaForm
+    .getAll("removeGallery")
+    .map((value) => String(value))
+    .filter((value) => value.length > 0);
+}
+
+async function applyBlogGalleryMedia(
+  postId: string,
+  locale: string,
+  mediaForm: FormData | undefined,
+): Promise<Result<{ id: string }> | null> {
+  const files = galleryFiles(mediaForm);
+  const removeIds = galleryRemoveIds(mediaForm);
+  if (files.length === 0 && removeIds.length === 0) {
+    return null;
+  }
+
+  const mediaResult = await syncBlogGalleryImages(postId, files, removeIds);
+  if (mediaResult.error) {
+    return err("VALIDATION_ERROR", mediaResult.error);
+  }
+
+  revalidateBlog(locale, postId);
+  return null;
+}
+
+function rejectInvalidVideo(
+  videoUrl: string | null,
+): Result<{ id: string }> | null {
+  if (videoUrl && !blogVideoEmbedUrl(videoUrl)) {
+    return err(
+      "INVALID_VIDEO",
+      "Video must be a YouTube or Vimeo link.",
+    );
+  }
+  return null;
+}
+
+async function relatedIdsForSave(
+  ids: string[],
+  selfId: string,
+): Promise<string[]> {
+  const related = normalizeRelatedPostIds(ids, selfId);
+  if (related.length === 0) {
+    return [];
+  }
+
+  const rows = await getDb()
+    .select({ id: blogPosts.id })
+    .from(blogPosts)
+    .where(and(inArray(blogPosts.id, related), isNull(blogPosts.deletedAt)));
+
+  if (rows.length !== related.length) {
+    throw new Error("RELATED_NOT_FOUND");
+  }
+
+  return related;
 }
 
 function buildLocaleCopy(data: UpsertBlogPostInput) {
@@ -149,18 +227,30 @@ export async function createBlogPostAction(
     return err(ruleError, blogRuleErrorMessage(ruleError));
   }
 
+  const videoError = rejectInvalidVideo(parsed.data.videoUrl);
+  if (videoError) {
+    return videoError;
+  }
+
   const actor = await requireAdmin(locale as Locale);
   const id = createId();
   const status = parsed.data.status;
   const publishedAt = parsePublishedAt(parsed.data.publishedAt, status);
 
   try {
+    const relatedPostIds = await relatedIdsForSave(
+      parsed.data.relatedPostIds,
+      id,
+    );
     await withTransaction(async (tx) => {
       await tx.insert(blogPosts).values({
         id,
         authorUserId: actor.id,
         status,
+        category: parsed.data.category,
         publishedAt,
+        videoUrl: parsed.data.videoUrl,
+        relatedPostIds,
         translations,
         tags: parsed.data.tags,
       });
@@ -186,9 +276,16 @@ export async function createBlogPostAction(
     if (mediaError) {
       return mediaError;
     }
+    const galleryError = await applyBlogGalleryMedia(id, locale, mediaForm);
+    if (galleryError) {
+      return galleryError;
+    }
 
     return ok({ id });
   } catch (error) {
+    if (error instanceof Error && error.message === "RELATED_NOT_FOUND") {
+      return err("RELATED_NOT_FOUND", "One of the related articles no longer exists.");
+    }
     if (isUniqueViolation(error)) {
       return err("SLUG_TAKEN", "That slug is already in use.");
     }
@@ -212,10 +309,19 @@ export async function updateBlogPostAction(
     return err("VALIDATION_ERROR", "Invalid blog post payload.");
   }
 
+  const videoError = rejectInvalidVideo(parsed.data.videoUrl);
+  if (videoError) {
+    return videoError;
+  }
+
   const actor = await requireAdmin(locale as Locale);
   const editingLocale = parsed.data.editingLocale;
 
   try {
+    const relatedPostIds = await relatedIdsForSave(
+      parsed.data.relatedPostIds,
+      postId,
+    );
     await withTransaction(async (tx) => {
       const [existing] = await tx
         .select()
@@ -249,6 +355,9 @@ export async function updateBlogPostAction(
           translations,
           tags: parsed.data.tags,
           status,
+          category: parsed.data.category,
+          videoUrl: parsed.data.videoUrl,
+          relatedPostIds,
           publishedAt,
           updatedAt: new Date(),
         })
@@ -279,11 +388,21 @@ export async function updateBlogPostAction(
     if (mediaError) {
       return mediaError;
     }
+    const galleryError = await applyBlogGalleryMedia(postId, locale, mediaForm);
+    if (galleryError) {
+      return galleryError;
+    }
 
     return ok({ id: postId });
   } catch (error) {
     if (error instanceof Error && error.message === "NOT_FOUND") {
       return err("NOT_FOUND", "Blog post not found.");
+    }
+    if (error instanceof Error && error.message === "RELATED_NOT_FOUND") {
+      return err(
+        "RELATED_NOT_FOUND",
+        "One of the related articles no longer exists.",
+      );
     }
     if (
       error instanceof Error &&

@@ -2,9 +2,9 @@
 
 **Database.** PostgreSQL (Neon)
 **ORM/migrations.** Drizzle ORM / Drizzle Kit
-**Կարգավիճակ.** Canonical 25-table schema migrated; idempotent seed available (`pnpm db:seed`)
-**Canonical table count.** 25
-**Վերջին թարմացում.** 2026-07-18
+**Կարգավիճակ.** Canonical 26-table schema migrated; idempotent seed available (`pnpm db:seed`)
+**Canonical table count.** 26
+**Վերջին թարմացում.** 2026-10-23
 
 ## 1. Սխեմայի նպատակը
 
@@ -29,7 +29,7 @@
 - Financial, stock և audit records-ը hard delete չեն ընդունում։
 - Flexible JSONB-ը միշտ Zod schema/version ունի և business-critical relational կապերը չի փոխարինում։
 
-## 3. Canonical 25-table inventory
+## 3. Canonical 26-table inventory
 
 | # | Table | Domain | Նշանակություն |
 |---:|---|---|---|
@@ -44,20 +44,21 @@
 | 9 | `stock_movements` | Inventory | Immutable stock ledger |
 | 10 | `hero_slides` | Content | Hero configuration և translations |
 | 11 | `blog_posts` | Content | Blog content, translations և tags |
-| 12 | `carts` | Commerce | Guest/customer cart identity/lifecycle |
-| 13 | `cart_items` | Commerce | Cart product quantities |
-| 14 | `wishlist_items` | Commerce | Customer wishlist entries |
-| 15 | `promotions` | Pricing | Coupons և automatic discounts մեկ rule model-ում |
-| 16 | `promotion_users` | Pricing | User-restricted promotion allowlist |
-| 17 | `delivery_rules` | Fulfillment | Location-based delivery pricing |
-| 18 | `orders` | Orders | Order, address/money/promotion snapshots, idempotency |
-| 19 | `order_items` | Orders | Immutable purchased-item snapshots |
-| 20 | `order_events` | Orders | Status, notes և payment provider events |
-| 21 | `payments` | Payments | Payment attempts/current provider state |
-| 22 | `reviews` | Engagement | Verified-purchase reviews/moderation |
-| 23 | `contact_messages` | Support | Contact inbox |
-| 24 | `audit_logs` | Security | Immutable admin/security audit |
-| 25 | `outbox_events` | Reliability | Reliable post-commit email/provider/cache work |
+| 12 | `school_events` | Content | School performances: schedule, price, translations, poster |
+| 13 | `carts` | Commerce | Guest/customer cart identity/lifecycle |
+| 14 | `cart_items` | Commerce | Cart product quantities |
+| 15 | `wishlist_items` | Commerce | Customer wishlist entries |
+| 16 | `promotions` | Pricing | Coupons և automatic discounts մեկ rule model-ում |
+| 17 | `promotion_users` | Pricing | User-restricted promotion allowlist |
+| 18 | `delivery_rules` | Fulfillment | Location-based delivery pricing |
+| 19 | `orders` | Orders | Order, address/money/promotion snapshots, idempotency |
+| 20 | `order_items` | Orders | Immutable purchased-item snapshots |
+| 21 | `order_events` | Orders | Status, notes և payment provider events |
+| 22 | `payments` | Payments | Payment attempts/current provider state |
+| 23 | `reviews` | Engagement | Verified-purchase reviews/moderation |
+| 24 | `contact_messages` | Support | Contact inbox |
+| 25 | `audit_logs` | Security | Immutable admin/security audit |
+| 26 | `outbox_events` | Reliability | Reliable post-commit email/provider/cache work |
 
 ### Count assumptions
 
@@ -176,9 +177,13 @@ Direct unexplained stock overwrite չի թույլատրվում։
 
 ### 7.2 `blog_posts`
 
-Author, status, publish timestamp, `translations JSONB` (title/slug/excerpt/sanitized content/SEO), `tags JSONB`/validated string array և timestamps/archive state։ Locale slug expression indexes-ը unique են։ Cover-ը `media_assets` relation է։
+Author, status, publish timestamp, category (`NEWS`, `COMPETITION`, `PERFORMANCE`, `EVENT`, `WORKSHOP`, `INTERVIEW`, `TIP`), optional YouTube/Vimeo `video_url`, `related_post_ids JSONB`, `translations JSONB` (title/slug/excerpt/sanitized content/SEO), `tags JSONB`/validated string array և timestamps/archive state։ Locale slug expression indexes-ը unique են։ Cover-ը և gallery-ն `media_assets` relation են (`COVER` / `GALLERY`)։
 
 Tags-ը standalone taxonomy չէ initial scope-ում, հետևաբար առանձին tag tables պետք չեն։
+
+### 7.3 `school_events`
+
+Status (`DRAFT`, `PUBLISHED`, `ARCHIVED`), calendar date, start time, duration minutes, AMD ticket price, optional age restriction, poster/seating/gallery object keys, և `translations JSONB` (name, slug, description, venue, address)։ Locale slug expression indexes-ը unique են միայն չջնջված տողերի համար։ Public կայքը ցույց է տալիս միայն `PUBLISHED` տողերը։ Ջնջումը soft delete է (`deleted_at`) և audit log ունի։
 
 ## 8. Cart և wishlist
 

@@ -1,13 +1,82 @@
 {
-  "eyebrow": "Elegant design",
-  "title": "About our online store",
-  "paragraphs": [
-    "We are delighted to welcome you to our online store. Our company strives to provide you with the best shopping experience with a wide range of quality products and excellent service.",
-    "Our mission is to make online shopping simple, convenient and enjoyable. We carefully select each product to ensure high quality and customer satisfaction.",
-    "We are proud to offer not only excellent products but also excellent customer service. Our team is always ready to help you find exactly what you are looking for."
-  ],
-  "teamEyebrow": "About us",
-  "teamTitle": "Our team",
-  "teamDescription": "Our team consists of experienced professionals who are dedicated to their work and strive to provide the best service for our customers.",
-  "heroImageAlt": "Our team working together"
+  "metaTitle": "About the school",
+  "metaDescription": "The story of AYAS dance school: history, mission, values, experience, teachers, and groups.",
+  "indexLabel": "On this page",
+  "hero": {
+    "title": "About the school",
+    "lead": "AYAS tells its path from passion to the stage, so the school can be trusted before the first class."
+  },
+  "history": {
+    "title": "History",
+    "imageAlt": "A dance class at AYAS",
+    "paragraphs": [
+      "AYAS was founded from a passion for the art of dance. The school grew as a place where tradition and contemporary expression are learned in the same studio.",
+      "Over the years a way of working took shape here: movement, stage presence, and inner discipline that a student carries beyond the performance."
+    ]
+  },
+  "mission": {
+    "title": "Mission",
+    "body": "We teach more than movement. Our mission is to shape artists who can express their inner world on stage, honoring tradition while staying open to a new language."
+  },
+  "values": {
+    "title": "Values",
+    "items": [
+      {
+        "title": "Tradition",
+        "body": "Roots stay visible in every contemporary work."
+      },
+      {
+        "title": "Expression",
+        "body": "Technique serves a personal voice and does not replace it."
+      },
+      {
+        "title": "Discipline",
+        "body": "Repetition, attention, and respect for the person beside you are part of class."
+      },
+      {
+        "title": "Stage",
+        "body": "Every class prepares the moment of standing before an audience."
+      }
+    ]
+  },
+  "experience": {
+    "achievementsTitle": "Achievements",
+    "achievementsBody": "The school’s experience shows on stage: in student performances, in a long path of study, and in the trust with which families choose AYAS.",
+    "achievements": [
+      "Stage experience from the first classes",
+      "Teaching that continues across generations",
+      "A community that stays with the school"
+    ],
+    "competitionsTitle": "Competitions",
+    "competitionsBody": "Competition is part of preparation and stage focus. Students learn to present their work, hear the result, and return to class more precise.",
+    "internationalTitle": "International participation",
+    "internationalBody": "The school stays open to meetings beyond its borders: master classes, shared programs, and stages where Armenian dance practice meets other schools."
+  },
+  "practice": {
+    "directionsTitle": "Dance directions",
+    "directions": ["Classical ballet", "Contemporary dance", "Traditional dance"],
+    "programsTitle": "Programs",
+    "programs": [
+      {
+        "title": "Core training",
+        "body": "Regular classes for technique, musicality, and stage conduct."
+      },
+      {
+        "title": "Stage preparation",
+        "body": "Rehearsals and performances that carry classwork to an audience."
+      },
+      {
+        "title": "Open classes",
+        "body": "A way to meet the school before choosing a group."
+      }
+    ],
+    "hallsTitle": "Studios",
+    "hallsBody": "Classes take place in studios made for dance: a proper floor, mirrors, and room for the group to work alone and together.",
+    "hallsImageAlt": "An AYAS dance studio",
+    "groupsTitle": "Groups",
+    "childrenTitle": "Children",
+    "childrenBody": "Children’s groups learn movement through play, order, and a first experience of the stage, with a load that fits their age.",
+    "adultsTitle": "Adults",
+    "adultsBody": "Adult groups are open to people starting or returning to dance: technique, expression, and community in the same class."
+  }
 }

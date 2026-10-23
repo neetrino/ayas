@@ -1,0 +1,64 @@
+{
+  "metaTitle": "Events",
+  "metaDescription": "AYAS performances and school evenings, with the date, venue, ticket price, seating plan, and photos.",
+  "hero": {
+    "title": "Events",
+    "lead": "Performances and school evenings. Open an event for the date, start time, venue, ticket price, seating plan, and photos."
+  },
+  "fields": {
+    "date": "Date",
+    "startTime": "Start time",
+    "duration": "Duration",
+    "venue": "Venue",
+    "address": "Address",
+    "age": "Age restriction",
+    "price": "Ticket price"
+  },
+  "seatingTitle": "Seating plan",
+  "galleryTitle": "Gallery",
+  "buyTicket": "Buy ticket",
+  "details": "Details",
+  "back": "All events",
+  "empty": "There are no events yet.",
+  "posterAlt": "Event poster",
+  "seatingAlt": "Seating plan",
+  "galleryAlt": "Photo from the event",
+  "items": [
+    {
+      "slug": "spring-gala",
+      "name": "Spring gala",
+      "description": "The school's spring performance brings classical, contemporary, and traditional dance onto one stage. Students from every program share the evening.",
+      "date": "2026-08-12",
+      "startTime": "19:00",
+      "durationMinutes": 90,
+      "venue": "AYAS stage",
+      "address": "15 Abovyan Street, Yerevan",
+      "ageRestriction": null,
+      "priceAmount": 8000
+    },
+    {
+      "slug": "open-class-night",
+      "name": "Open class night",
+      "description": "An evening of open classes and short studies. Watch the work in the studio, then stay for a conversation with the teachers.",
+      "date": "2026-09-20",
+      "startTime": "18:30",
+      "durationMinutes": 75,
+      "venue": "AYAS studio",
+      "address": "15 Abovyan Street, Yerevan",
+      "ageRestriction": null,
+      "priceAmount": 5000
+    },
+    {
+      "slug": "winter-recital",
+      "name": "Winter recital",
+      "description": "The winter recital is the school's staged evening of prepared works. Seats are numbered.",
+      "date": "2026-12-18",
+      "startTime": "19:30",
+      "durationMinutes": 120,
+      "venue": "AYAS stage",
+      "address": "15 Abovyan Street, Yerevan",
+      "ageRestriction": "12+",
+      "priceAmount": 10000
+    }
+  ]
+}

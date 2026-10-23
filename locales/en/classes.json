@@ -1,0 +1,107 @@
+{
+  "metaTitle": "Courses",
+  "metaDescription": "AYAS dance directions, classes, and programs, with what each offers, the age group, and the level.",
+  "hero": {
+    "title": "Courses",
+    "lead": "Every dance direction, class, and program at the school is here. Compare what each program offers, the age group, and the level, then choose the class that fits you."
+  },
+  "filters": {
+    "label": "Filter classes",
+    "direction": "Direction",
+    "age": "Age group",
+    "level": "Level",
+    "all": "All"
+  },
+  "fields": {
+    "age": "Age group",
+    "level": "Level"
+  },
+  "choose": "Choose this class",
+  "empty": "No class matches this combination. Change the direction, age, or level.",
+  "imageAlt": "A dance class at AYAS",
+  "directions": {
+    "ballet": "Classical ballet",
+    "contemporary": "Contemporary dance",
+    "traditional": "Traditional dance",
+    "open": "Open class"
+  },
+  "ages": {
+    "children": "Children",
+    "teens": "Teens",
+    "adults": "Adults",
+    "youth": "Teens and adults",
+    "all": "All ages"
+  },
+  "levels": {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "all": "All levels"
+  },
+  "programs": [
+    {
+      "id": "ballet-children",
+      "title": "Classical ballet for children",
+      "direction": "ballet",
+      "age": "children",
+      "level": "beginner",
+      "summary": "First positions, musicality, and a load that fits the age. Through play, a child learns order and a first experience of the stage."
+    },
+    {
+      "id": "ballet-teens",
+      "title": "Classical ballet for teens",
+      "direction": "ballet",
+      "age": "teens",
+      "level": "intermediate",
+      "summary": "Barre, center, and stage preparation. The class deepens technique and prepares a performance."
+    },
+    {
+      "id": "ballet-adults",
+      "title": "Classical ballet for adults",
+      "direction": "ballet",
+      "age": "adults",
+      "level": "all",
+      "summary": "Technique for people starting or returning to dance. The class respects the body's experience and moves toward expression."
+    },
+    {
+      "id": "contemporary",
+      "title": "Contemporary dance",
+      "direction": "contemporary",
+      "age": "youth",
+      "level": "all",
+      "summary": "Floor work, improvisation, and a personal voice. For students who want movement to become their own language."
+    },
+    {
+      "id": "traditional-children",
+      "title": "Traditional dance for children",
+      "direction": "traditional",
+      "age": "children",
+      "level": "beginner",
+      "summary": "Armenian dance through pattern, play, and ensemble. A child learns the order of movement and a first stage presence."
+    },
+    {
+      "id": "traditional-adults",
+      "title": "Traditional dance for adults",
+      "direction": "traditional",
+      "age": "adults",
+      "level": "intermediate",
+      "summary": "Ensemble work and stage repertoire. The class deepens traditional technique and prepares a performance."
+    },
+    {
+      "id": "open-class",
+      "title": "Open class",
+      "direction": "open",
+      "age": "all",
+      "level": "beginner",
+      "summary": "A way to meet the school, the studio, and a teacher before choosing a group. One visit, without a long commitment."
+    },
+    {
+      "id": "stage",
+      "title": "Stage preparation",
+      "direction": "ballet",
+      "age": "teens",
+      "level": "advanced",
+      "summary": "Rehearsals that carry classwork to an audience. For students who already have technique and are preparing to perform."
+    }
+  ]
+}

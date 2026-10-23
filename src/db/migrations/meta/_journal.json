@@ -22,6 +22,20 @@
       "when": 1784471653841,
       "tag": "0002_narrow_caretaker",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792758558471,
+      "tag": "0003_blog_article_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792763026625,
+      "tag": "0004_school_events",
+      "breakpoints": true
     }
   ]
 }

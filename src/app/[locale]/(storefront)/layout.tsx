@@ -5,6 +5,7 @@ import { MobileBottomNavIsland } from "@/components/layout/MobileBottomNavIsland
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { MaintenanceGate } from "@/components/layout/MaintenanceGate";
+import { StorefrontChrome } from "@/components/layout/StorefrontChrome";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import {
@@ -35,21 +36,25 @@ export default async function StorefrontLayout({
   );
 
   return (
-    <div className="storefront-shell flex min-h-dvh flex-1 flex-col bg-gray-50">
-      <SiteHeader
-        locale={locale}
-        currency={currency}
-        dictionary={dictionary}
-      />
-      <main className="storefront-main mx-auto w-full max-w-7xl flex-1 px-4 py-10 pb-24 sm:px-6 md:pb-10 lg:px-8">
-        <MaintenanceGate>{children}</MaintenanceGate>
-      </main>
-      <SiteFooter dictionary={dictionary} locale={locale} />
-      <MobileBottomNavIsland
-        locale={locale}
-        currency={currency}
-        dictionary={dictionary}
-      />
-    </div>
+    <StorefrontChrome
+      locale={locale}
+      header={
+        <SiteHeader
+          locale={locale}
+          currency={currency}
+          dictionary={dictionary}
+        />
+      }
+      footer={<SiteFooter dictionary={dictionary} locale={locale} />}
+      mobileNav={
+        <MobileBottomNavIsland
+          locale={locale}
+          currency={currency}
+          dictionary={dictionary}
+        />
+      }
+    >
+      <MaintenanceGate>{children}</MaintenanceGate>
+    </StorefrontChrome>
   );
 }

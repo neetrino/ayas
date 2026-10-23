@@ -34,6 +34,19 @@ body {
   font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
 }
 
+.home-landing {
+  font-family: var(--font-montserrat), var(--font-armenian), ui-sans-serif, sans-serif;
+  background: #fff;
+  color: #030303;
+}
+
+.home-display {
+  font-family: var(--font-armenian), var(--font-montserrat), ui-sans-serif, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.86;
+}
+
 @layer base {
   a[href],
   button:not(:disabled),

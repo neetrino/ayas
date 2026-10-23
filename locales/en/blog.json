@@ -1,4 +1,26 @@
 {
-  "empty": "No blog posts yet.",
-  "tags": "Tags"
+  "metaTitle": "Blog / News",
+  "metaDescription": "School news, competition results, performances, events, workshops, teacher interviews, and dance tips.",
+  "hero": {
+    "title": "Blog / News",
+    "lead": "School news, competition results, performances, events, workshops, teacher interviews, and dance tips."
+  },
+  "empty": "No articles yet.",
+  "emptyCategory": "No articles in this category yet.",
+  "all": "All",
+  "filtersLabel": "Categories",
+  "back": "All articles",
+  "imageAlt": "Article image",
+  "gallery": "Gallery",
+  "video": "Video",
+  "related": "Related articles",
+  "categories": {
+    "NEWS": "School news",
+    "COMPETITION": "Competition results",
+    "PERFORMANCE": "Performances",
+    "EVENT": "Events",
+    "WORKSHOP": "Workshops",
+    "INTERVIEW": "Teacher interviews",
+    "TIP": "Dance tips"
+  }
 }

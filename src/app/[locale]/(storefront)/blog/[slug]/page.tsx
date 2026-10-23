@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { getEnv } from "@/config/env";
-import { getPublishedBlogPostBySlug } from "@/features/blog/application/queries";
+import {
+  getPublishedBlogPostBySlug,
+  listPublishedBlogPosts,
+} from "@/features/blog/application/queries";
+import { BlogArticleView } from "@/features/blog/ui/BlogArticleView";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import { sanitizeBlogHtml } from "@/lib/sanitize/html";
 
 type BlogPostPageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -91,8 +92,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     redirect(`/${rawLocale}/blog/${post.copy.slug}`);
   }
 
-  const dictionary = getDictionary(rawLocale);
-  const sanitizedContent = sanitizeBlogHtml(post.copy.content);
   const jsonLd = buildBlogPostingJsonLd({
     locale: rawLocale,
     slug: post.copy.slug,
@@ -100,62 +99,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     excerpt: post.copy.excerpt,
     publishedAt: post.publishedAt,
   });
+  const posts = await listPublishedBlogPosts(rawLocale);
 
   return (
-    <article className="flex flex-col gap-6">
-      <p className="text-sm text-[var(--muted)]">
-        <Link href={`/${rawLocale}/blog`} className="underline">
-          {dictionary.nav.blog}
-        </Link>
-      </p>
-
-      <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          {post.copy.title}
-        </h1>
-        {post.publishedAt ? (
-          <time
-            dateTime={post.publishedAt}
-            className="text-sm text-[var(--muted)]"
-          >
-            {post.publishedAt.slice(0, 10)}
-          </time>
-        ) : null}
-        {post.copy.excerpt ? (
-          <p className="text-lg text-[var(--muted)]">{post.copy.excerpt}</p>
-        ) : null}
-      </header>
-
-      {post.coverUrl ? (
-        <div className="relative h-[28rem] w-full overflow-hidden">
-          <Image
-            src={post.coverUrl}
-            alt=""
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
-        </div>
-      ) : null}
-
-      <div
-        className="prose max-w-none flex flex-col gap-3"
-        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+    <>
+      <BlogArticleView
+        locale={rawLocale}
+        dictionary={getDictionary(rawLocale)}
+        post={post}
+        posts={posts}
       />
-
-      {post.tags.length > 0 ? (
-        <p className="text-sm text-[var(--muted)]">
-          {dictionary.blog.tags}: {post.tags.join(", ")}
-        </p>
-      ) : null}
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(jsonLd),
         }}
       />
-    </article>
+    </>
   );
 }

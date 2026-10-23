@@ -16,10 +16,16 @@ import {
 } from "@/features/blog/application/manage-blog";
 import type { AdminBlogListItem } from "@/features/blog/application/queries";
 import {
+  BLOG_GALLERY_LIMIT,
+  BLOG_RELATED_LIMIT,
+  type BlogCategory,
+} from "@/features/blog/domain/blog-article";
+import {
   normalizeBlogSlug,
   type BlogPostStatus,
   type BlogTranslations,
 } from "@/features/blog/domain/blog-rules";
+import { BlogPostExtras } from "@/features/blog/ui/BlogPostExtras";
 import { localeLabels, locales, type Locale } from "@/lib/i18n/config";
 
 type LocaleDraft = {
@@ -30,11 +36,18 @@ type LocaleDraft = {
   slugTouched: boolean;
 };
 
+type PendingGallery = {
+  key: string;
+  file: File;
+  url: string;
+};
+
 type BlogPostDrawerProps = {
   locale: string;
   open: boolean;
   onClose: () => void;
   post?: AdminBlogListItem | null;
+  relatedOptions: readonly { id: string; title: string }[];
 };
 
 function emptyDraft(): LocaleDraft {
@@ -84,6 +97,7 @@ export function BlogPostDrawer({
   open,
   onClose,
   post = null,
+  relatedOptions,
 }: BlogPostDrawerProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -110,6 +124,15 @@ export function BlogPostDrawer({
     () => post?.coverUrl ?? null,
   );
   const [removeExistingImage, setRemoveExistingImage] = useState(false);
+  const [category, setCategory] = useState<BlogCategory>(
+    () => post?.category ?? "NEWS",
+  );
+  const [videoUrl, setVideoUrl] = useState(() => post?.videoUrl ?? "");
+  const [relatedPostIds, setRelatedPostIds] = useState<string[]>(
+    () => post?.relatedPostIds ?? [],
+  );
+  const [gallery, setGallery] = useState(() => post?.gallery ?? []);
+  const [pendingGallery, setPendingGallery] = useState<PendingGallery[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [prevOpen, setPrevOpen] = useState(open);
@@ -131,6 +154,11 @@ export function BlogPostDrawer({
         setImageFile(null);
         setImagePreview(post.coverUrl ?? null);
         setRemoveExistingImage(false);
+        setCategory(post.category);
+        setVideoUrl(post.videoUrl ?? "");
+        setRelatedPostIds(post.relatedPostIds);
+        setGallery(post.gallery);
+        setPendingGallery([]);
         setError(null);
       } else {
         setActiveLocale("en");
@@ -144,6 +172,11 @@ export function BlogPostDrawer({
         setImageFile(null);
         setImagePreview(null);
         setRemoveExistingImage(false);
+        setCategory("NEWS");
+        setVideoUrl("");
+        setRelatedPostIds([]);
+        setGallery([]);
+        setPendingGallery([]);
         setError(null);
       }
     }
@@ -192,6 +225,9 @@ export function BlogPostDrawer({
                 content: current.content,
                 status,
                 publishedAt: publishedAt || null,
+                category,
+                videoUrl: videoUrl || null,
+                relatedPostIds,
                 tags: post?.tags.join(", ") ?? "",
               };
               const mediaForm = new FormData();
@@ -200,6 +236,15 @@ export function BlogPostDrawer({
               }
               if (removeExistingImage) {
                 mediaForm.set("removeImage", "1");
+              }
+              for (const item of pendingGallery) {
+                mediaForm.append("gallery", item.file);
+              }
+              const removedGallery = (post?.gallery ?? []).filter(
+                (item) => !gallery.some((current) => current.id === item.id),
+              );
+              for (const item of removedGallery) {
+                mediaForm.append("removeGallery", item.id);
               }
 
               const result =
@@ -397,6 +442,54 @@ export function BlogPostDrawer({
                 JPEG, PNG, WebP, or GIF. Max 5MB.
               </p>
             </div>
+
+            <BlogPostExtras
+              disabled={isPending}
+              category={category}
+              onCategoryChange={setCategory}
+              videoUrl={videoUrl}
+              onVideoUrlChange={setVideoUrl}
+              relatedPostIds={relatedPostIds}
+              relatedOptions={relatedOptions}
+              onToggleRelated={(id) => {
+                setRelatedPostIds((current) => {
+                  if (current.includes(id)) {
+                    return current.filter((item) => item !== id);
+                  }
+                  if (current.length >= BLOG_RELATED_LIMIT) {
+                    return current;
+                  }
+                  return [...current, id];
+                });
+              }}
+              gallery={gallery}
+              pendingGallery={pendingGallery}
+              onAddGallery={(files) => {
+                const room =
+                  BLOG_GALLERY_LIMIT - gallery.length - pendingGallery.length;
+                const next = files.slice(0, Math.max(room, 0));
+                setPendingGallery((current) => [
+                  ...current,
+                  ...next.map((file) => ({
+                    key: `${file.name}-${file.size}-${crypto.randomUUID()}`,
+                    file,
+                    url: URL.createObjectURL(file),
+                  })),
+                ]);
+              }}
+              onRemoveGallery={(id) => {
+                setGallery((current) => current.filter((item) => item.id !== id));
+              }}
+              onRemovePending={(key) => {
+                setPendingGallery((current) => {
+                  const match = current.find((item) => item.key === key);
+                  if (match) {
+                    URL.revokeObjectURL(match.url);
+                  }
+                  return current.filter((item) => item.key !== key);
+                });
+              }}
+            />
 
             {error ? <p className="text-sm text-red-700">{error}</p> : null}
           </div>

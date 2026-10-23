@@ -12,10 +12,17 @@
   "storePhone": "+374 XX XXX XXX",
   "storeEmail": "info@shop.am",
   "storeAddress": "Ереван, Абовян 10",
+  "addressLabel": "Адрес",
+  "phoneLabel": "Телефон",
+  "hoursLabel": "Часы работы",
+  "socialLabel": "Социальные сети",
   "social": {
     "instagram": "https://instagram.com",
     "facebook": "https://facebook.com",
-    "linkedin": "https://linkedin.com"
+    "linkedin": "https://linkedin.com",
+    "twitter": "https://twitter.com",
+    "vimeo": "https://vimeo.com",
+    "youtube": "https://youtube.com"
   },
   "callTitle": "Позвоните нам:",
   "callDescription": "Мы на связи 24/7, 7 дней в неделю.",
@@ -25,5 +32,5 @@
   "hqTitle": "Главный офис:",
   "hoursWeekdays": "Понедельник - Пятница: 9:00-20:00",
   "hoursSaturday": "Суббота: 11:00 - 15:00",
-  "mapTitle": "Расположение магазина"
+  "mapTitle": "Карта"
 }

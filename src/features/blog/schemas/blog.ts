@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+import {
+  BLOG_CATEGORIES,
+  BLOG_RELATED_LIMIT,
+} from "@/features/blog/domain/blog-article";
 import { BLOG_POST_STATUSES } from "@/features/blog/domain/blog-rules";
 import { locales } from "@/lib/i18n/config";
 
@@ -21,6 +25,22 @@ export const upsertBlogPostSchema = z.object({
   seoTitle: z.string().trim().max(200).optional(),
   seoDescription: z.string().trim().max(320).optional(),
   status: z.enum(BLOG_POST_STATUSES).default("DRAFT"),
+  category: z.enum(BLOG_CATEGORIES).default("NEWS"),
+  videoUrl: z
+    .string()
+    .trim()
+    .max(500)
+    .optional()
+    .nullable()
+    .transform((value) => {
+      const trimmed = value?.trim() ?? "";
+      return trimmed.length > 0 ? trimmed : null;
+    }),
+  relatedPostIds: z
+    .array(z.string().uuid())
+    .max(BLOG_RELATED_LIMIT)
+    .optional()
+    .default([]),
   publishedAt: z
     .string()
     .trim()

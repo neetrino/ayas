@@ -16,5 +16,87 @@
     "qualityDescription": "Тщательно отобранные товары, которым можно доверять.",
     "returnTitle": "Бесплатный возврат",
     "returnDescription": "Простой возврат, если что-то не так."
+  },
+  "landing": {
+    "previous": "Назад",
+    "next": "Далее",
+    "openMenu": "Открыть меню",
+    "nav": {
+      "about": "О школе",
+      "courses": "Курсы",
+      "teachers": "Преподаватели",
+      "events": "События",
+      "blog": "Блог",
+      "shop": "Магазин",
+      "gallery": "Галерея",
+      "contact": "Связаться"
+    },
+    "hero": {
+      "dance": "Танцуй",
+      "feel": "Чувствуй",
+      "shine": "Сияй",
+      "lead": "AYAS — ведущая школа танца Армении, где традиция встречается с современным выражением.",
+      "more": "Подробнее",
+      "register": "Записаться",
+      "statValue": "200",
+      "statLabel": "Учеников"
+    },
+    "about": {
+      "title": "О ШКОЛЕ",
+      "first": "AYAS основана из любви к искусству танца. Мы учим не только движению: мы формируем артистов, которые выражают свой внутренний мир на сцене.",
+      "second": "Наш подход соединяет традиционную и современную технику.",
+      "courses": "Курсы"
+    },
+    "classes": {
+      "name": "Классический балет"
+    },
+    "coaches": {
+      "title": "Наши преподаватели",
+      "name": "Имя Фамилия",
+      "more": "Подробнее"
+    },
+    "shop": {
+      "title": "Магазин",
+      "add": "В корзину",
+      "placeholderTitle": "Snickers Off-White",
+      "placeholderMeta": "2024",
+      "placeholderBrand": "NIKE",
+      "placeholderPrice": "$38.00"
+    },
+    "events": {
+      "title": "[Выступление 1]",
+      "date": "12/08/2026",
+      "more": "Подробнее"
+    },
+    "reviews": {
+      "title": "Отзывы",
+      "quote": "I've been consistently impressed with the quality of service provided by this website. They have exceeded my expectations and delivered exceptional results. Highly recommended!",
+      "name": "Steve H.",
+      "role": "Marketing Manager",
+      "more": "Подробнее"
+    },
+    "news": {
+      "title": "Новости",
+      "eyebrow": "Simone says...",
+      "quote": "Authenticity without performativity is a delicate balance, much like a dance that flows effortlessly. Structure without rigidity allows for creativity to flourish.",
+      "author": "Simone de Beauvoir",
+      "handle": "@simone.db_1949"
+    },
+    "cta": {
+      "title": "Начни свой путь",
+      "body": "Каждый большой артист начал с первого шага. Выбери курс, запишись онлайн и стань частью семьи AYAS.",
+      "register": "Записаться"
+    },
+    "footer": {
+      "visit": "Пишите или звоните в любое время",
+      "phone": "+1 (555) 012-3456",
+      "email": "info@ayas.com",
+      "addressLine1": "123 Industrial Ave",
+      "addressLine2": "New York, NY 10001",
+      "map": "Карта",
+      "copyright": "Copyright © 2026 | Все права защищены | Создано",
+      "maker": "Neetrino",
+      "makerSuffix": ""
+    }
   }
 }

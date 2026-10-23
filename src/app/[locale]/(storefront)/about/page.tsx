@@ -1,13 +1,30 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { AboutHero } from "@/features/about/ui/AboutHero";
-import { AboutTeam } from "@/features/about/ui/AboutTeam";
-import { isLocale } from "@/lib/i18n/config";
+import { AboutSchoolView } from "@/features/about/ui/AboutSchoolView";
+import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 type AboutPageProps = {
   params: Promise<{ locale: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: AboutPageProps): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+
+  if (!isLocale(rawLocale)) {
+    return {};
+  }
+
+  const about = getDictionary(rawLocale).about;
+
+  return {
+    title: about.metaTitle,
+    description: about.metaDescription,
+  };
+}
 
 export default async function AboutPage({ params }: AboutPageProps) {
   const { locale: rawLocale } = await params;
@@ -16,12 +33,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
     notFound();
   }
 
-  const dictionary = getDictionary(rawLocale);
+  const locale: Locale = rawLocale;
 
-  return (
-    <div className="-mx-4 -my-10 bg-white sm:-mx-6 lg:-mx-8">
-      <AboutHero copy={dictionary.about} />
-      <AboutTeam copy={dictionary.about} />
-    </div>
-  );
+  return <AboutSchoolView locale={locale} dictionary={getDictionary(locale)} />;
 }

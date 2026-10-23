@@ -183,7 +183,7 @@
 
 ### 9.1 Shell
 
-- Responsive left sidebar՝ Home, Dashboard, Home Hero, Orders, Products, Categories, Coupons, Discounts, Users, Messages, Analytics, Delivery, Blog, Settings։
+- Responsive left sidebar՝ Home, Dashboard, Home Hero, Orders, Products, Categories, Coupons, Discounts, Users, Messages, Analytics, Delivery, Blog, Events, Settings։
 - Home-ը locale-aware storefront home link է։
 - Desktop sidebar-ը collapsible է, mobile-ը focus-managed drawer։
 
@@ -289,7 +289,7 @@
 
 | ID | Պահանջ / acceptance criteria |
 |---|---|
-| MSG-001 | Contact form՝ name, email, optional phone, subject, message։ |
+| MSG-001 | Contact form՝ name, email, optional phone, subject, message։ Public contact էջը ցույց է տալիս հասցե, հեռախոս, էլ. փոստ, աշխատանքային ժամեր, սոցիալական ցանցեր և քարտեզ։ |
 | MSG-002 | Server validation, honeypot, rate limit և spam control կա; response-ը չի բացահայտում detection details։ |
 | MSG-003 | Accepted message-ը պահվում է DB-ում status `unread`-ով և կարող է email notification trigger անել։ |
 | MSG-004 | Admin list/detail-ը ցույց է տալիս sender, subject, email, date և unread/read/replied/archived status։ |
@@ -303,11 +303,26 @@
 
 ## 19. Blog և content
 
-- Admin create/edit/publish/archive՝ multilingual title/excerpt/content, locale slug, cover, author, status/date, SEO, tags։
-- Public routes՝ `/{locale}/blog` և `/{locale}/blog/{slug}`՝ pagination-ով։
+- Admin create/edit/publish/archive՝ multilingual title/excerpt/content, locale slug, cover, gallery, YouTube/Vimeo video, category, related articles, author, status/date, SEO, tags։
+- Categories՝ school news, competition results, performances, events, workshops, teacher interviews, dance tips։
+- Public routes՝ `/{locale}/blog` (category filter) և `/{locale}/blog/{slug}`՝ featured image, gallery, video և related articles։
 - Միայն published և publish-date-ով հասանելի posts են public։
 - Rich text-ը server-side sanitized է; stored/rendered canonical format-ը `OPEN-010`-ով է։
 - BlogPosting JSON-LD, canonical, hreflang և OG metadata կան։
+
+### School events
+
+- Admin route՝ `/{locale}/admin/events`։ Create և edit-ը բացվում են drawer-ով։
+- Fields՝ multilingual name/slug/description/venue/address, date, start time, duration, AMD price, optional age restriction, status, poster, seating plan, gallery։
+- Public routes՝ `/{locale}/events` և `/{locale}/events/{slug}` կարդում են միայն `PUBLISHED` event-ները։
+- Ջնջումը soft delete է և audit log ունի։
+
+### School gallery
+
+- Public route՝ `/{locale}/gallery`։
+- Categories՝ classes, performances, competitions, backstage, workshops։
+- Media՝ photos և videos։ Video-ն same-origin `/gallery/*.mp4` է կամ YouTube/Vimeo page URL, որը դառնում է safe embed։
+- Նկարները բացվում են lightbox-ով (փակել, նախորդ/հաջորդ, Escape)։ Տեսանյութը բացվում է նույն դիտարկիչում։
 
 ## 20. Settings
 

@@ -47,6 +47,23 @@ export function invalidateProductsCache(input?: {
   }
 }
 
+/** Invalidates the public event list and optional per-slug detail caches. */
+export function invalidateEventsCache(input?: {
+  slug?: string;
+  slugs?: readonly string[];
+}): void {
+  updateTag(CACHE_TAGS.events);
+  const slugs = new Set<string>(input?.slugs ?? []);
+  if (input?.slug) {
+    slugs.add(input.slug);
+  }
+  for (const slug of slugs) {
+    for (const locale of locales) {
+      updateTag(CACHE_TAGS.eventSlug(locale, slug));
+    }
+  }
+}
+
 /** Invalidates blog list caches and optional per-post / per-slug detail caches. */
 export function invalidateBlogCache(input?: {
   postId?: string;

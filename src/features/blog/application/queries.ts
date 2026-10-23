@@ -1,11 +1,22 @@
 import "server-only";
 
-import { and, desc, eq, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  inArray,
+  isNotNull,
+  isNull,
+  or,
+  sql,
+} from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
 import { getDb } from "@/db/client";
 import { blogPosts, mediaAssets } from "@/db/schema";
+import type { BlogCategory } from "@/features/blog/domain/blog-article";
 import {
   resolveBlogTranslation,
   type BlogLocaleCopy,
@@ -21,26 +32,42 @@ import { mediaPublicUrl } from "@/lib/media/public-url";
 
 export type AdminBlogPost = typeof blogPosts.$inferSelect;
 
+export type BlogGalleryItem = {
+  id: string;
+  url: string;
+};
+
 export type AdminBlogListItem = {
   id: string;
   status: BlogPostStatus;
+  category: BlogCategory;
   publishedAt: string | null;
   title: string;
   excerpt: string;
   slug: string;
   path: string;
   coverUrl: string | null;
+  videoUrl: string | null;
+  gallery: BlogGalleryItem[];
+  relatedPostIds: string[];
   tags: string[];
   translations: BlogTranslations;
 };
 
 export type StorefrontBlogPostListItem = {
   id: string;
+  category: BlogCategory;
   /** ISO-8601 string — Date cannot survive `unstable_cache` JSON round-trip. */
   publishedAt: string | null;
   tags: string[];
   coverUrl: string | null;
   copy: BlogLocaleCopy;
+};
+
+export type StorefrontBlogPost = StorefrontBlogPostListItem & {
+  videoUrl: string | null;
+  gallery: BlogGalleryItem[];
+  relatedPostIds: string[];
 };
 
 function toPublishedAtIso(value: Date | string | null): string | null {
@@ -54,20 +81,32 @@ function toPublishedAtIso(value: Date | string | null): string | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 }
 
-export type StorefrontBlogPost = StorefrontBlogPostListItem;
+type BlogMediaBundle = {
+  coverUrl: string | null;
+  gallery: BlogGalleryItem[];
+};
 
-async function loadBlogCoverUrls(
+function emptyMedia(): BlogMediaBundle {
+  return { coverUrl: null, gallery: [] };
+}
+
+async function loadBlogMedia(
   blogPostIds: string[],
-): Promise<Map<string, string>> {
-  const images = new Map<string, string>();
+): Promise<Map<string, BlogMediaBundle>> {
+  const images = new Map<string, BlogMediaBundle>();
+  for (const id of blogPostIds) {
+    images.set(id, emptyMedia());
+  }
   if (blogPostIds.length === 0) {
     return images;
   }
 
   const mediaRows = await getDb()
     .select({
+      id: mediaAssets.id,
       blogPostId: mediaAssets.blogPostId,
       objectKey: mediaAssets.objectKey,
+      role: mediaAssets.role,
     })
     .from(mediaAssets)
     .where(
@@ -75,16 +114,25 @@ async function loadBlogCoverUrls(
         inArray(mediaAssets.blogPostId, blogPostIds),
         eq(mediaAssets.uploadStatus, "READY"),
         or(
-          eq(mediaAssets.isPrimary, true),
           eq(mediaAssets.role, "COVER"),
           eq(mediaAssets.role, "PRIMARY"),
+          eq(mediaAssets.role, "GALLERY"),
+          eq(mediaAssets.isPrimary, true),
         ),
       ),
-    );
+    )
+    .orderBy(asc(mediaAssets.sortOrder));
 
   for (const media of mediaRows) {
-    if (!media.blogPostId || images.has(media.blogPostId)) continue;
-    images.set(media.blogPostId, mediaPublicUrl(media.objectKey));
+    if (!media.blogPostId) continue;
+    const bundle = images.get(media.blogPostId) ?? emptyMedia();
+    const url = mediaPublicUrl(media.objectKey);
+    if (media.role === "GALLERY") {
+      bundle.gallery.push({ id: media.id, url });
+    } else if (!bundle.coverUrl) {
+      bundle.coverUrl = url;
+    }
+    images.set(media.blogPostId, bundle);
   }
 
   return images;
@@ -100,20 +148,25 @@ export async function listAdminBlogPosts(
     .where(isNull(blogPosts.deletedAt))
     .orderBy(desc(blogPosts.updatedAt), desc(blogPosts.createdAt));
 
-  const images = await loadBlogCoverUrls(rows.map((row) => row.id));
+  const images = await loadBlogMedia(rows.map((row) => row.id));
 
   return rows.map((row) => {
     const copy = resolveBlogTranslation(row.translations, locale);
     const slug = copy?.slug ?? "";
+    const media = images.get(row.id) ?? emptyMedia();
     return {
       id: row.id,
       status: row.status,
+      category: row.category,
       publishedAt: toPublishedAtIso(row.publishedAt)?.slice(0, 10) ?? null,
       title: copy?.title ?? "Untitled",
       excerpt: copy?.excerpt ?? "",
       slug,
       path: slug ? `/blog/${slug}` : "/blog",
-      coverUrl: images.get(row.id) ?? null,
+      coverUrl: media.coverUrl,
+      videoUrl: row.videoUrl,
+      gallery: media.gallery,
+      relatedPostIds: row.relatedPostIds,
       tags: row.tags,
       translations: row.translations,
     };
@@ -148,7 +201,7 @@ async function loadPublishedBlogPosts(
     )
     .orderBy(desc(blogPosts.publishedAt), desc(blogPosts.createdAt));
 
-  const images = await loadBlogCoverUrls(rows.map((row) => row.id));
+  const images = await loadBlogMedia(rows.map((row) => row.id));
 
   return rows
     .map((row) => {
@@ -158,9 +211,10 @@ async function loadPublishedBlogPosts(
       }
       return {
         id: row.id,
+        category: row.category,
         publishedAt: toPublishedAtIso(row.publishedAt),
         tags: row.tags,
-        coverUrl: images.get(row.id) ?? null,
+        coverUrl: images.get(row.id)?.coverUrl ?? null,
         copy,
       };
     })
@@ -216,13 +270,18 @@ async function loadPublishedBlogPostBySlug(
     return null;
   }
 
-  const images = await loadBlogCoverUrls([row.id]);
+  const images = await loadBlogMedia([row.id]);
+  const media = images.get(row.id) ?? emptyMedia();
 
   return {
     id: row.id,
+    category: row.category,
     publishedAt: toPublishedAtIso(row.publishedAt),
     tags: row.tags,
-    coverUrl: images.get(row.id) ?? null,
+    coverUrl: media.coverUrl,
+    videoUrl: row.videoUrl,
+    gallery: media.gallery,
+    relatedPostIds: row.relatedPostIds,
     copy,
   };
 }

@@ -21,9 +21,12 @@
 | `/[locale]/products` | Public | URL-filtered catalog, server pagination |
 | `/[locale]/products/[slug]` | Public | Product detail; locale slug lookup; 404 unpublished/missing |
 | `/[locale]/about` | Public | Locale content |
-| `/[locale]/contact` | Public | Contact form + rate limit |
-| `/[locale]/blog` | Public | Published posts, pagination |
-| `/[locale]/blog/[slug]` | Public | Published locale post |
+| `/[locale]/events` | Public | School event list |
+| `/[locale]/gallery` | Public | School gallery: category and photo/video filters, image lightbox, YouTube/Vimeo or same-origin video |
+| `/[locale]/events/[slug]` | Public | Event detail; 404 when the slug is missing |
+| `/[locale]/contact` | Public | Address, phone, email, hours, social links, map, and contact form |
+| `/[locale]/blog` | Public | Published posts, category filter |
+| `/[locale]/blog/[slug]` | Public | Published locale post, gallery, video, related |
 | `/[locale]/policies/terms` | Public | Versioned approved content |
 | `/[locale]/policies/privacy` | Public | Versioned approved content |
 | `/[locale]/policies/shipping` | Public | Approved content |
@@ -79,6 +82,7 @@
 | `/[locale]/admin/analytics` | Metrics + CSV export |
 | `/[locale]/admin/delivery` | Delivery rules |
 | `/[locale]/admin/blog` | Blog CMS |
+| `/[locale]/admin/events` | School event list; create and edit open in a drawer |
 | `/[locale]/admin/settings` | Typed store settings |
 
 ## 6. Non-page HTTP endpoints
@@ -201,6 +205,7 @@ Permission-ը ստուգվում է resource query-ի հետ միասին կամ
 | Hero update/reorder | home/hero per locale | hero cache if used |
 | Review moderation | product detail/rating | rating aggregates |
 | Blog publish/update | blog list/post/sitemap | blog cache if used |
+| School event create/update/delete | events list and event slug, home | event cache |
 | Promotion/settings update | catalog/product/checkout pricing contexts | promotion/settings namespaces |
 | Order/status update | owner order/profile dashboard/admin orders/analytics | analytics/order summary |
 | Exchange rate refresh | currency display contexts as designed | exchange-rate namespace |

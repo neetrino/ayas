@@ -8,10 +8,19 @@ import { IconDropdown } from "@/components/ui/IconDropdown";
 import type { Locale } from "@/lib/i18n/config";
 import { localeLabels, locales } from "@/lib/i18n/config";
 
+const COMPACT_LOCALE_LABELS: Record<Locale, string> = {
+  hy: "ՀԱՅ",
+  en: "EN",
+  ru: "RU",
+};
+
 type LocaleSwitcherProps = {
   locale: Locale;
   label: string;
   menuPlacement?: "bottom" | "top";
+  triggerClassName?: string;
+  dropdownClassName?: string;
+  compact?: boolean;
 };
 
 function replaceLocaleInPath(pathname: string, nextLocale: Locale): string {
@@ -28,16 +37,21 @@ export function LocaleSwitcher({
   locale,
   label,
   menuPlacement = "bottom",
+  triggerClassName = "inline-flex items-center gap-2 text-sm font-medium text-gray-800",
+  dropdownClassName,
+  compact = false,
 }: LocaleSwitcherProps) {
   const pathname = usePathname();
+  const labels = compact ? COMPACT_LOCALE_LABELS : localeLabels;
 
   return (
     <IconDropdown
       label={label}
       menuPlacement={menuPlacement}
+      triggerClassName={dropdownClassName}
       trigger={(open) => (
-        <span className="inline-flex items-center gap-2 text-sm font-medium text-gray-800">
-          {localeLabels[locale]}
+        <span className={triggerClassName}>
+          {labels[locale]}
           <ChevronDown
             className={`h-4 w-4 text-gray-400 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "rotate-180" : ""}`}
             aria-hidden="true"
@@ -83,7 +97,7 @@ export function LocaleSwitcher({
                 </svg>
               ) : null}
             </span>
-            {localeLabels[item]}
+            {labels[item]}
           </AppLink>
         );
       })}
